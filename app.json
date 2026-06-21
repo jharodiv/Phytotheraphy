@@ -9,7 +9,6 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.phytotherapy.phytotherapy",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -23,7 +22,6 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "googleServicesFile": "./google-services.json",
       "package": "com.phytotherapy.phytotherapy"
     },
     "web": {

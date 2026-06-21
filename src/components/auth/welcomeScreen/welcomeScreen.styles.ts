@@ -13,23 +13,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 180,
         height: 180,
-        marginBottom: 20,
-    },
-
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: COLORS.black,
-        textAlign: 'center'
-    },
-
-    subtitle: {
-        fontSize: 16,
-        color: COLORS.gray,
-        textAlign: 'center',
-        marginTop: 10,
-        marginBottom: 40,
-        lineHeight: 24,
+        marginBottom: 70,
     },
 
     buttonContainer: {
@@ -42,7 +26,14 @@ const styles = StyleSheet.create({
     },
     
     registerButton: {
-        backgroundColor: COLORS.secondary,
+        backgroundColor: COLORS.transparent,
+        borderWidth: 1,
+        borderColor: COLORS.black,
+
+    },
+
+    loginText: {
+        color: COLORS.white,
     }
 });
 
