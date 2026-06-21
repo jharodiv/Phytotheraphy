@@ -4,12 +4,12 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
     button: {
         padding: 12,
-        borderRadius: 8,
+        borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
     },
 
-    iconContainer: {
+    iconContainer: { 
         position: 'absolute',
         left: 16,
     },
@@ -18,6 +18,8 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.black,
         textAlign: 'center',
+        fontWeight: '400',
+        fontFamily: "Poppins_400Regular",
     },
 
     loginText: {

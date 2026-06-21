@@ -1,8 +1,7 @@
 import AuthButton from '@components/auth/AuthButton/authButton';
 import styles from '@components/auth/welcomeScreen/welcomeScreen.styles';
-import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
 //NativeStackScreenProps = comes from react-navigation, its purpose is to give your screen component TypeScript types of navigation.
 
@@ -26,16 +25,24 @@ const WelcomeScreen = () => {
             />
 
             <AuthButton
-            title="Create Account"
+            title="Sign Up"
             onPress={() => router.push ("/(auth)/register")}
             style={styles.registerButton}
             />
 
+            <Text style={styles.orText}>or</Text>
+
             <AuthButton
             title="Continue with Google"
-            onPress={() => router.push ("/(auth)/register")}
+            onPress={() => router.push("/(auth)/register")}
             style={styles.registerButton}
-            icon={<AntDesign name="google" size={20} />}
+            icon={
+                <Image
+                source={require("@images/GoogleLogo.png")}
+                style={{ width: 20, height: 20 }}
+                resizeMode="contain"
+                />
+            }
             />
         </View>
         </View>

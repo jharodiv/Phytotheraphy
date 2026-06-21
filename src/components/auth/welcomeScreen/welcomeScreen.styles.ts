@@ -11,13 +11,13 @@ const styles = StyleSheet.create({
     },
 
     logo: {
-        width: 180,
-        height: 180,
-        marginBottom: 70,
+        width: 210,
+        height: 210,
+        marginBottom: 100,
     },
 
     buttonContainer: {
-        width: '100%',
+        width: '80%',
         gap: 12,
     },
 
@@ -34,6 +34,11 @@ const styles = StyleSheet.create({
 
     loginText: {
         color: COLORS.white,
+    },
+
+    orText: {
+        textAlign: 'center',
+        color: COLORS.black
     }
 });
 
