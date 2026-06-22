@@ -1,38 +1,96 @@
-import AuthButton from '@components/auth/AuthButton/authButton';
-import styles from '@components/auth/welcomeScreen/welcomeScreen.styles';
-import { router } from 'expo-router';
-import { Image, Text, View } from 'react-native';
-
-//NativeStackScreenProps = comes from react-navigation, its purpose is to give your screen component TypeScript types of navigation.
-
+import AuthButton from "@components/auth/AuthButton/authButton";
+import styles from "@components/auth/welcomeScreen/welcomeScreen.styles";
+import { router } from "expo-router";
+import { useEffect, useRef } from "react";
+import {
+    Animated,
+    Easing,
+    Image,
+    Text,
+    View,
+} from "react-native";
 
 const WelcomeScreen = () => {
+    const logoOpacity = useRef(new Animated.Value(0)).current;
+    const logoScale = useRef(new Animated.Value(0.8)).current;
+
+    const buttonsOpacity = useRef(new Animated.Value(0)).current;
+    const buttonsTranslateY = useRef(new Animated.Value(40)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+        Animated.parallel([
+            Animated.timing(logoOpacity, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+            }),
+
+            Animated.spring(logoScale, {
+            toValue: 1,
+            friction: 6,
+            tension: 60,
+            useNativeDriver: true,
+            }),
+        ]),
+
+        Animated.parallel([
+            Animated.timing(buttonsOpacity, {
+            toValue: 1,
+            duration: 500,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+            }),
+
+            Animated.timing(buttonsTranslateY, {
+            toValue: 0,
+            duration: 500,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+            }),
+        ]),
+        ]).start();
+    }, []);
+
     return (
         <View style={styles.container}>
-        {/* Logo */}
-        <Image
+        <Animated.Image
             source={require("@images/LOGO.png")}
-            style={styles.logo}
             resizeMode="contain"
+            style={[
+            styles.logo,
+            {
+                opacity: logoOpacity,
+                transform: [{ scale: logoScale }],
+            },
+            ]}
         />
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-            <AuthButton
+
+        <Animated.View
+            style={[
+            styles.buttonContainer,
+            {
+                opacity: buttonsOpacity,
+                transform: [{ translateY: buttonsTranslateY }],
+            },
+            ]}
+        >
+        <AuthButton
             title="Login"
-            onPress={() => router.push ("/(auth)/login")}
+            onPress={() => router.push("/(auth)/login")}
             style={styles.loginButton}
             loginText={styles.loginText}
-            />
+        />
 
-            <AuthButton
+        <AuthButton
             title="Sign Up"
-            onPress={() => router.push ("/(auth)/register")}
+            onPress={() => router.push("/(auth)/register")}
             style={styles.registerButton}
-            />
+        />
 
-            <Text style={styles.orText}>or</Text>
+        <Text style={styles.orText}>or</Text>
 
-            <AuthButton
+        <AuthButton
             title="Continue with Google"
             onPress={() => router.push("/(auth)/register")}
             style={styles.registerButton}
@@ -44,10 +102,9 @@ const WelcomeScreen = () => {
                 />
             }
             />
-        </View>
+        </Animated.View>
         </View>
     );
 };
 
 export default WelcomeScreen;
-
