@@ -8,6 +8,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const LoginScreen = () => {
     return (
         <View style={styles.container}>
+
+        <View style={styles.topShape} />
+        <View style={styles.bottomShape} />
+        
         <View style={styles.header}>
             <Image
                 source={require("@images/LOGO.png")}
