@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 
 import AuthButton from "@components/auth/AuthButton/authButton";
 import AuthInput from "@components/auth/authInput/authInput";
@@ -8,9 +8,16 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const LoginScreen = () => {
     return (
         <View style={styles.container}>
-        <Text style={styles.title}>
-            Welcome Back
-        </Text>
+        <View style={styles.header}>
+            <Image
+                source={require("@images/LOGO.png")}
+                style={styles.logo}
+            />
+
+            <Text style={styles.title}>
+                Phytotherapy
+            </Text>
+        </View>
 
         <View style={styles.inputContainer}>
             <AuthInput
