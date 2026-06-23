@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 120,
+        marginBottom: 20,
     },  
 
     container: {
@@ -40,6 +40,29 @@ export const styles = StyleSheet.create({
         width: "80%",
         alignSelf: "center",
         backgroundColor: COLORS.primary,
+    },
+
+    screenTitle: {
+        fontSize: 24,
+        fontFamily: "Poppins_600SemiBold",
+        textAlign: "center",
+        marginBottom: 24,
+    },
+
+    footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    },
+
+    footerText: {
+        fontFamily: "Poppins_400Regular",
+    },
+
+    authenticationLink: {
+        marginLeft: 4,
+        color: COLORS.primary,
+        fontFamily: "Poppins_600SemiBold",
     },
 
     topShape: {
