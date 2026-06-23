@@ -2,8 +2,9 @@ import { Image, Text, View } from "react-native";
 
 import AuthButton from "@components/auth/AuthButton/authButton";
 import AuthInput from "@components/auth/authInput/authInput";
-import { styles } from "@components/auth/loginScreen/loginScreen.styles";
+import { styles } from "@components/auth/authenticationScreens/authenticationScreen.style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const LoginScreen = () => {
     return (
@@ -22,6 +23,10 @@ const LoginScreen = () => {
                 Phytotherapy
             </Text>
         </View>
+
+        <Text style={styles.screenTitle}>
+            Login
+        </Text>
 
         <View style={styles.inputContainer}>
             <AuthInput
@@ -55,6 +60,19 @@ const LoginScreen = () => {
             style={styles.loginButton}
             loginText = {{ color: "white" }}
         />
+
+        <View style={styles.footer}>
+            <Text style={styles.footerText}>
+                Don't have an account?
+            </Text>
+
+            <Text
+                style={styles.authenticationLink}
+                onPress={() => router.push("/(auth)/register")}
+            >
+                Register
+            </Text>
+        </View>
         </View>
     );
 }
