@@ -52,6 +52,12 @@ const LoginScreen = () => {
                 />
             }
             />
+
+            <Text
+            style={styles.forgotPassword}
+            onPress={() => router.push("/(auth)/forgotpassword")}>
+            Forgot Password?
+            </Text>
         </View>
 
         <AuthButton

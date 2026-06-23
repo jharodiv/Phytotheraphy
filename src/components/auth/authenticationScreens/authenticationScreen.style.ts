@@ -42,6 +42,13 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.primary,
     },
 
+    forgotPassword: {
+        alignSelf: "flex-end",
+        color: COLORS.primary,
+        fontFamily: "Poppins_600SemiBold",
+        marginTop: -8,
+    },
+
     screenTitle: {
         fontSize: 24,
         fontFamily: "Poppins_600SemiBold",

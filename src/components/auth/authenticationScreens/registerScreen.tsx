@@ -75,12 +75,13 @@ const RegisterScreen = () => {
                 />
             }
             />
-        </View>
+
             <Text
-            style={styles.authenticationLink}
+            style={styles.forgotPassword}
             onPress={() => router.push("/(auth)/forgotpassword")}>
             Forgot Password?
-        </Text>
+            </Text>
+        </View>
         <AuthButton
             title="Register"
             onPress={() => {}}
