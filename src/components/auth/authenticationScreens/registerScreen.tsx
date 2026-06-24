@@ -78,7 +78,7 @@ const RegisterScreen = () => {
 
             <Text
             style={styles.forgotPassword}
-            onPress={() => router.push("/(auth)/forgotpassword")}>
+            onPress={() => router.push("/(auth)/forgot-password")}>
             Forgot Password?
             </Text>
         </View>
