@@ -77,11 +77,37 @@ export const styles = StyleSheet.create({
         marginBottom: 24,
     },
 
+    emailText: {
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "Poppins_600SemiBold",
+        marginBottom: 24,
+    },
+
     inputContainer: {
         width: "80%",
         alignSelf: "center",
         gap: 16,
         marginBottom: 24,
+    },
+
+
+    codeContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        gap: 12,
+        marginBottom: 32,
+    },
+
+    codeInput: {
+        width: 60,
+        height: 60,
+        borderWidth: 1,
+        borderColor: "#D9D9D9",
+        borderRadius: 12,
+        textAlign: "center",
+        fontSize: 24,
+        fontFamily: "Poppins_600SemiBold",
     },
 
     saveButton: {

@@ -1,9 +1,9 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
 import AuthButton from "@components/auth/AuthButton/authButton";
 import AuthInput from "@components/auth/authInput/authInput";
 import { styles } from "@components/auth/forgotPassword/forgotPassword.style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const ForgotPasswordScreen = () => {
     return (
@@ -49,7 +49,7 @@ const ForgotPasswordScreen = () => {
 
             <AuthButton
                 title="Send"
-                onPress={() => {}}
+                onPress={() => router.push("/(auth)/verify-code")}
                 style={styles.saveButton}
                 loginText={{ color: "white" }}
             />
