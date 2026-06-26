@@ -4,6 +4,7 @@ import {
 } from "react-native";
 
 import Header from "@components/home/header/header";
+import SearchBar from "@components/home/searchBar/searchBar";
 
 export default function TabLayout() {
     return (
@@ -12,6 +13,8 @@ export default function TabLayout() {
             showsVerticalScrollIndicator={false}
         >
             <Header />
+            <SearchBar />
+            
         </ScrollView>
         </SafeAreaView>
     );
