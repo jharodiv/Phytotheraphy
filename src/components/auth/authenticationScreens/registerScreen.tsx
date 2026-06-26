@@ -84,7 +84,7 @@ const RegisterScreen = () => {
         </View>
         <AuthButton
             title="Register"
-            onPress={() => {}}
+            onPress={() => router.push("/(tabs)")}
             style={styles.loginButton}
             loginText = {{ color: "white" }}
         />
