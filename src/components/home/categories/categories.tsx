@@ -1,38 +1,32 @@
-import { Ionicons } from "@expo/vector-icons";
+import styles from "@components/home/categories/categories.style";
 import {
+    Image,
     ScrollView,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
 
-import styles from "@components/home/categories/categories.style";
-
 const categories = [
     {
         id: 1,
         label: "All",
-        icon: "apps-outline",
+        icon: require("@images/home/categoriesAll.png"),
     },
     {
         id: 2,
         label: "Cold & Cough",
-        icon: "medkit-outline",
+        icon: require("@images/home/categoriesAll.png"),
     },
     {
         id: 3,
         label: "Digestive",
-        icon: "restaurant-outline",
+        icon: require("@images/home/categoriesAll.png"),
     },
     {
         id: 4,
-        label: "Skin Care",
-        icon: "flower-outline",
-    },
-    {
-        id: 5,
         label: "Diabetes",
-        icon: "water-outline",
+        icon: require("@images/home/categoriesAll.png"),
     },
 ];
 
@@ -58,10 +52,10 @@ const CategorySection = () => {
                     style={styles.categoryButton}
                     activeOpacity={0.8}
                 >
-                <Ionicons
-                    name={category.icon as any}
-                    size={18}
-                    color="#2E7D32"
+                <Image
+                    source={category.icon}
+                    style={styles.icon}
+                    resizeMode="contain"
                 />
 
                 <Text style={styles.categoryText}>

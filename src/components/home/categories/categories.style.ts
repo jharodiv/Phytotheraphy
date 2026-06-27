@@ -36,30 +36,22 @@ const styles = StyleSheet.create({
         height: 86,
         borderRadius: 19,
 
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#FFFFFF",
 
         justifyContent: "center",
         alignItems: "center",
 
         marginRight: 12,
-        paddingHorizontal: 6,
 
-        // iOS Shadow
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 3,
         },
         shadowOpacity: 0.08,
-        shadowRadius: 6,
-
-        // Android Shadow
-        elevation: 3,
-
-        // Optional subtle border
-        borderWidth: 1,
-        borderColor: "#ECECEC",
-    },
+        shadowRadius: 8,
+        elevation: 4,
+},
 
     categoryText: {
         marginTop: 6,
@@ -69,6 +61,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontFamily: "Poppins_600SemiBold"
     },
+
+    icon: {
+        width: 30,
+        height: 30
+    }
 });
 
 export default styles;
