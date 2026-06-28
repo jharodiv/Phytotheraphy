@@ -1,10 +1,9 @@
 import styles from "@components/home/categories/categories.style";
 import {
     Image,
-    ScrollView,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 
 const categories = [
@@ -16,17 +15,22 @@ const categories = [
     {
         id: 2,
         label: "Cold & Cough",
-        icon: require("@images/home/categoriesAll.png"),
+        icon: require("@images/home/lung.png"),
     },
     {
         id: 3,
         label: "Digestive",
-        icon: require("@images/home/categoriesAll.png"),
+        icon: require("@images/home/stomach.png"),
     },
     {
         id: 4,
+        label: "Skin Care",
+        icon: require("@images/home/face.png"),
+    },
+        {
+        id: 5,
         label: "Diabetes",
-        icon: require("@images/home/categoriesAll.png"),
+        icon: require("@images/home/diabetis.png"),
     },
 ];
 
@@ -41,17 +45,12 @@ const CategorySection = () => {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.categoryList}
-            >
-            {categories.map((category) => (
-                <TouchableOpacity
+                <View style={styles.categoryList}>
+                {categories.map((category) => (
+                    <TouchableOpacity
                     key={category.id}
                     style={styles.categoryButton}
-                    activeOpacity={0.8}
-                >
+                    >
                 <Image
                     source={category.icon}
                     style={styles.icon}
@@ -63,8 +62,8 @@ const CategorySection = () => {
                     </Text>
                 </TouchableOpacity>
                 ))}
-            </ScrollView>
             </View>
+        </View>
     );
 };
 
