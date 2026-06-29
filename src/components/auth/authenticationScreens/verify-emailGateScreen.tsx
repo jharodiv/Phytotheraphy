@@ -1,13 +1,10 @@
 import AuthButton from "@components/auth/AuthButton/authButton";
 import { styles } from "@components/auth/authenticationScreens/authenticationScreen.style";
+import { resendVerificationEmail } from "@services/auth.service";
 import { router } from "expo-router";
-import { useState } from "react";
-import { Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { AppState, Text, View } from "react-native";
 import { auth } from "../../../../firebaseConfig";
-import {
-  reloadAndCheckVerified,
-  resendVerificationEmail,
-} from "../../../services/auth.service";
 
 const VerifyEmailGateScreen = () => {
   const [message, setMessage] = useState("");
@@ -16,28 +13,43 @@ const VerifyEmailGateScreen = () => {
   const currentUser = auth.currentUser;
   const email = currentUser?.email ?? "";
 
-  const onRefresh = async () => {
+  useEffect(() => {
     if (!currentUser) return;
-    setLoading(true);
-    setMessage("");
-    try {
-      const verified = await reloadAndCheckVerified(currentUser);
-      if (verified) {
-        router.replace("/(tabs)");
-      } else {
-        setMessage("Still not verified yet. Please check your email.");
+
+    const checkVerification = async () => {
+      try {
+        await currentUser.reload();
+
+        if (currentUser.emailVerified) {
+          router.replace("/(tabs)");
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch {
-      setMessage("Could not refresh verification status. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    // Check every 5 seconds
+    const interval = setInterval(checkVerification, 5000);
+
+    // Check immediately when app comes back to foreground
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        checkVerification();
+      }
+    });
+
+    return () => {
+      clearInterval(interval);
+      subscription.remove();
+    };
+  }, [currentUser]);
 
   const onResend = async () => {
     if (!currentUser) return;
+
     setLoading(true);
     setMessage("");
+
     try {
       await resendVerificationEmail(currentUser);
       setMessage("Verification email resent.");
@@ -51,29 +63,35 @@ const VerifyEmailGateScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Verify your email</Text>
+
       <Text style={{ textAlign: "center", marginBottom: 12 }}>
         We sent a verification link to:
       </Text>
+
       <Text
-        style={{ textAlign: "center", marginBottom: 24, fontWeight: "600" }}
+        style={{
+          textAlign: "center",
+          marginBottom: 24,
+          fontWeight: "600",
+        }}
       >
         {email}
       </Text>
 
+      <Text style={{ textAlign: "center", marginBottom: 24 }}>
+        Waiting for verification...
+      </Text>
+
       {!!message && (
-        <Text style={{ textAlign: "center", marginBottom: 16 }}>{message}</Text>
+        <Text style={{ textAlign: "center", marginBottom: 16 }}>
+          {message}
+        </Text>
       )}
 
       <AuthButton
-        title={loading ? "Checking..." : "I've verified, continue"}
-        onPress={onRefresh}
-        style={styles.loginButton}
-        loginText={{ color: "white" }}
+        title={loading ? "Sending..." : "Resend verification email"}
+        onPress={onResend}
       />
-
-      <View style={{ height: 12 }} />
-
-      <AuthButton title="Resend verification email" onPress={onResend} />
     </View>
   );
 };

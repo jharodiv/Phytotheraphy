@@ -16,6 +16,9 @@
       ],
       "@app-types/*": [
         "types/*"
+      ],
+      "@services/*": [
+        "services/*"
       ]
     }
   },
