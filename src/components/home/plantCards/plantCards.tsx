@@ -1,68 +1,78 @@
 import styles from '@components/home/plantCards/plantCards.style';
 import {
     Image,
+    ScrollView,
     Text,
     TouchableOpacity,
     View
 } from "react-native";
 
-const categories = [
+const plants = [
     {
         id: 1,
-        label: "All",
-        icon: require("@images/home/categoriesAll.png"),
+        name: "Lagundi",
+        category: "Cold & Cough",
+        image: require("@images/home/plants/lagundi.jpg"),
     },
     {
         id: 2,
-        label: "Cold & Cough",
-        icon: require("@images/home/lung.png"),
+        name: "Ampalaya",
+        category: "Diabetes",
+        image: require("@images/home/plants/lagundi.jpg"),
     },
     {
         id: 3,
-        label: "Digestive",
-        icon: require("@images/home/stomach.png"),
+        name: "Aloe Vera",
+        category: "Skin Care",
+        image: require("@images/home/plants/lagundi.jpg"),
     },
     {
         id: 4,
-        label: "Skin Care",
-        icon: require("@images/home/face.png"),
-    },
-        {
-        id: 5,
-        label: "Diabetes",
-        icon: require("@images/home/diabetis.png"),
-    },
+        name: "Ginger",
+        category: "Skin Care",
+        image: require("@images/home/plants/lagundi.jpg")
+    }
 ];
-
 const PlantCardsSection = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Category</Text>
+                <Text style={styles.title}>Popular Medicinal Plant</Text>
 
                 <TouchableOpacity activeOpacity={0.7}>
                 <Text style={styles.seeAll}>See All</Text>
                 </TouchableOpacity>
             </View>
 
-                <View style={styles.categoryList}>
-                {categories.map((category) => (
-                    <TouchableOpacity
-                    key={category.id}
-                    style={styles.categoryButton}
-                    >
-                <Image
-                    source={category.icon}
-                    style={styles.icon}
-                    resizeMode="contain"
-                />
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.plantList}
+                >
+                    {plants.map((plant) => (
+                        <TouchableOpacity
+                            key={plant.id}
+                            style={styles.card}
+                            activeOpacity={0.8}
+                        >
+                            <Image
+                                source={plant.image}
+                                style={styles.image}
+                                resizeMode="cover"
+                            />
 
-                <Text style={styles.categoryText}>
-                    {category.label}
-                    </Text>
-                </TouchableOpacity>
-                ))}
-            </View>
+                            <View style={styles.info}>
+                                <Text style={styles.plantName}>
+                                    {plant.name}
+                                </Text>
+
+                                <Text style={styles.plantCategory}>
+                                    {plant.category}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
         </View>
     );
 };
