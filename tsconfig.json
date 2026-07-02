@@ -6,10 +6,10 @@
     "ignoreDeprecations": "6.0",
     "paths": {
       "@components/*": [
-        "components/*"
+        "components/*",
       ],
       "@constants/*": [
-        "constants/*"
+        "constants/*",
       ],
       "@images/*": [
         "images/*"
