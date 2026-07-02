@@ -13,11 +13,11 @@ const Footer = () => {
             route: "/(tabs)",
         },
         {
-            icon: "camera",
-            route: "/(tabs)"
+            icon: "camera", 
+            route: "/(scan)/camera" // Nek pa change nalang  into camera (not sure kasi how ko ma-open yung cam kasi nasa browser ako)
         },
         {
-            icon: "account",
+            icon: "bookmark-outline",
             route: "/(tabs)"
         }
     ] as const;
