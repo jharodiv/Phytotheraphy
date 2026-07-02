@@ -65,7 +65,6 @@ const PlantCardsSection = () => {
                                 <Text style={styles.plantName}>
                                     {plant.name}
                                 </Text>
-
                                 <Text style={styles.plantCategory}>
                                     {plant.category}
                                 </Text>
