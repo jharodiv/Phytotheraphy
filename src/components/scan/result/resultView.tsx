@@ -3,8 +3,9 @@ import PlantImage from "@components/scan/result/plantImage";
 import { ScrollView, View } from "react-native";
 
 type Props = {
-  imageUri: string;
-  imageBase64: string; // 👈 new
+  imageUrl: string;
+  photographerName: string;
+  photographerUrl: string;
   commonName: string;
   scientificName: string;
   medicinalProperties: string[];
@@ -13,13 +14,12 @@ type Props = {
 };
 
 export default function ResultView(props: Props) {
-  console.log("ResultView imageUri:", props.imageUri);
-
   return (
     <View style={{ flex: 1 }}>
       <PlantImage
-        imageUri={props.imageUri}
-        imageBase64={props.imageBase64} // 👈 new
+        imageUrl={props.imageUrl}
+        photographerName={props.photographerName}
+        photographerUrl={props.photographerUrl}
         commonName={props.commonName}
         scientificName={props.scientificName}
       />

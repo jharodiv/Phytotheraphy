@@ -1,4 +1,5 @@
 import { identifyPlant } from "@services/gemini.service";
+import { searchHerbImage } from "@services/unsplash.service";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import { router } from "expo-router";
@@ -65,15 +66,21 @@ export default function CameraScreen() {
 
       const result = await identifyPlant(resizedBase64);
 
+      // ❗ Check for error BEFORE using any success properties
       if ("error" in result) {
         Alert.alert("Identification Failed", result.error);
         return;
       }
+
+      // ✅ Now TypeScript knows result is the success type
+      const unsplash = await searchHerbImage(result.commonName);
+
       router.push({
         pathname: "/(scan)/result",
         params: {
-          imageUri: resized.uri, // keep for display fallback
-          imageBase64: resized.base64, // 👈 add this
+          imageUrl: unsplash?.imageUrl ?? "",
+          photographerName: unsplash?.photographerName ?? "",
+          photographerUrl: unsplash?.photographerUrl ?? "",
           commonName: result.commonName,
           scientificName: result.scientificName,
           medicinalProperties: JSON.stringify(result.medicinalProperties),

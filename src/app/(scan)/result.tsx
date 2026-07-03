@@ -3,8 +3,9 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function ResultScreen() {
   const {
-    imageUri,
-    imageBase64,
+    imageUrl,
+    photographerName,
+    photographerUrl,
     commonName,
     scientificName,
     medicinalProperties,
@@ -18,8 +19,9 @@ export default function ResultScreen() {
 
   return (
     <ResultView
-      imageUri={imageUri as string}
-      imageBase64={imageBase64 as string} // 👈 new
+      imageUrl={imageUrl as string}
+      photographerName={photographerName as string}
+      photographerUrl={photographerUrl as string}
       commonName={commonName as string}
       scientificName={scientificName as string}
       medicinalProperties={properties}
