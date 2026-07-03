@@ -21,6 +21,9 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "CAMERA"
+      ],
       "predictiveBackGestureEnabled": false,
       "package": "com.phytotherapy.phytotherapy"
     },
@@ -40,7 +43,14 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,

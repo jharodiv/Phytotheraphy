@@ -1,20 +1,30 @@
+import ResultView from "@components/scan/result/resultView";
 import { useLocalSearchParams } from "expo-router";
 
-import ResultView from "@components/scan/result/resultView";
-
 export default function ResultScreen() {
+  const {
+    imageUri,
+    imageBase64,
+    commonName,
+    scientificName,
+    medicinalProperties,
+    origin,
+    usage,
+  } = useLocalSearchParams();
 
-    const {
-        imageUri,
-        commonName,
-        scientificName,
-    } = useLocalSearchParams();
+  const properties = medicinalProperties
+    ? JSON.parse(medicinalProperties as string)
+    : [];
 
-    return (
-        <ResultView
-            imageUri={imageUri as string}
-            commonName={commonName as string}
-            scientificName={scientificName as string}
-        />
-    );
+  return (
+    <ResultView
+      imageUri={imageUri as string}
+      imageBase64={imageBase64 as string} // 👈 new
+      commonName={commonName as string}
+      scientificName={scientificName as string}
+      medicinalProperties={properties}
+      origin={origin as string}
+      usage={usage as string}
+    />
+  );
 }
