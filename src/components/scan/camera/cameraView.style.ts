@@ -22,6 +22,31 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
+
+
+        guideContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    guideFrame: {
+        width: 260,
+        height: 260,
+        borderWidth: 3,
+        borderColor: "#FFFFFF",
+        borderRadius: 16,
+        backgroundColor: "transparent",
+    },
+
+    guideText: {
+        marginTop: 16,
+        color: "#FFFFFF",
+        fontSize: 16,
+        fontWeight: "600",
+        textAlign: "center",
+        paddingHorizontal: 24,
+    },
 });
 
 export default styles;

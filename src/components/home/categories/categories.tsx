@@ -14,7 +14,7 @@ const categories = [
     },
     {
         id: 2,
-        label: "Cold & Cough",
+        label: "Cold",
         icon: require("@images/home/lung.png"),
     },
     {

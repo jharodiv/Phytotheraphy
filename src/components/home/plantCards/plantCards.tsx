@@ -11,7 +11,7 @@ const plants = [
     {
         id: 1,
         name: "Lagundi",
-        category: "Cold & Cough",
+        category: "Cold",
         image: require("@images/home/plants/lagundi.jpg"),
     },
     {
