@@ -98,28 +98,181 @@ export default function CameraScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <CameraView ref={cameraRef} style={{ flex: 1 }} facing="back" />
+      <CameraView
+        ref={cameraRef}
+        style={{ flex: 1 }}
+        facing="back"
+      />
 
-      {/* Overlay – now outside CameraView */}
+      {/* ===== Scanner Overlay ===== */}
       <View
-        pointerEvents="box-none"
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        {/* Top dark area */}
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.45)",
+          }}
+        />
+
+        {/* Middle section */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {/* Left dark */}
+          <View
+            style={{
+              flex: 1,
+              height: 260,
+              backgroundColor: "rgba(0,0,0,0.45)",
+            }}
+          />
+
+          {/* Scanning Frame */}
+          <View
+            style={{
+              width: 260,
+              height: 260,
+              position: "relative",
+            }}
+          >
+            {/* Top Left */}
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: 40,
+                height: 40,
+                borderTopWidth: 4,
+                borderLeftWidth: 4,
+                borderColor: "#FFFFFF",
+                borderTopLeftRadius: 20,
+              }}
+            />
+
+            {/* Top Right */}
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 40,
+                height: 40,
+                borderTopWidth: 4,
+                borderRightWidth: 4,
+                borderColor: "#FFFFFF",
+                borderTopRightRadius: 20,
+              }}
+            />
+
+            {/* Bottom Left */}
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: 40,
+                height: 40,
+                borderBottomWidth: 4,
+                borderLeftWidth: 4,
+                borderColor: "#FFFFFF",
+                borderBottomLeftRadius: 20,
+              }}
+            />
+
+            {/* Bottom Right */}
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                width: 40,
+                height: 40,
+                borderBottomWidth: 4,
+                borderRightWidth: 4,
+                borderColor: "#FFFFFF",
+                borderBottomRightRadius: 20,
+              }}
+            />
+          </View>
+
+          {/* Right dark */}
+          <View
+            style={{
+              flex: 1,
+              height: 260,
+              backgroundColor: "rgba(0,0,0,0.45)",
+            }}
+          />
+        </View>
+
+        {/* Bottom dark */}
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.45)",
+          }}
+        >
+          <Text
+            style={{
+              color: "#FFFFFF",
+              marginTop: 20,
+              fontSize: 18,
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            Place the leaf inside the frame
+          </Text>
+        </View>
+      </View>
+
+      {/* ===== Capture Button ===== */}
+      <View
         style={{
           position: "absolute",
           bottom: 60,
           alignSelf: "center",
-          backgroundColor: "white",
-          borderRadius: 40,
-          padding: 20,
         }}
       >
         {loading ? (
           <ActivityIndicator size="large" color="#2E7D32" />
         ) : (
-          <Pressable onPress={handleCapture}>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>Scan</Text>
+          <Pressable
+            onPress={handleCapture}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: "#FFFFFF",
+              justifyContent: "center",
+              alignItems: "center",
+              elevation: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: "700",
+                color: "#2E7D32",
+              }}
+            >
+              Scan
+            </Text>
           </Pressable>
         )}
       </View>
     </View>
-  );
-}
+);}
