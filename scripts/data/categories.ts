@@ -1,27 +1,27 @@
 export const categories = [
     {
-        id: 1,
+        id: "all",
         label: "All",
-        icon: require("@images/home/categoriesAll.png"),
+        icon: "categoriesAll"
     },
     {
-        id: 2,
+        id: "cold",
         label: "Cold",
-        icon: require("@images/home/lung.png"),
+        icon: "cold"
     },
     {
-        id: 3,
+        id: "digestive",
         label: "Digestive",
-        icon: require("@images/home/stomach.png"),
+        icon: "digestive"
     },
     {
-        id: 4,
+        id: "skin-care",
         label: "Skin Care",
-        icon: require("@images/home/face.png"),
+        icon: "skinCare"
     },
         {
-        id: 5,
+        id: "diabetes",
         label: "Diabetes",
-        icon: require("@images/home/diabetis.png"),
+        icon: "diabetes"
     },
 ];
