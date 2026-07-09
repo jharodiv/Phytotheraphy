@@ -1,6 +1,7 @@
-import { readFileSync } from "fs";
 import { ServiceAccount } from "firebase-admin";
 import { cert, initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { readFileSync } from "fs";
 
 /*
     Initialize the Firebase Admin SDK using a Service Account.
@@ -11,16 +12,14 @@ import { cert, initializeApp } from "firebase-admin/app";
 
     This allows the script to perform privileged operations such as
     seeding Firestore, managing Authentication, or other admin tasks.
-
-    Note:
-    The "as ServiceAccount" assertion is only for TypeScript. It tells
-    the compiler that the parsed JSON matches the expected ServiceAccount
-    type and does not change the object at runtime.
 */
 const serviceAccount = JSON.parse(
     readFileSync("./serviceAccountKey.json", "utf8")
 ) as ServiceAccount;
 
-initializeApp({
+const app = initializeApp({
     credential: cert(serviceAccount),
 });
+
+// Export Firestore so other files can use it
+export const db = getFirestore(app);
