@@ -1,3 +1,4 @@
+import { COLORS } from "@constants/colors";
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
@@ -38,9 +39,8 @@ const styles = StyleSheet.create({
         color: "#777",
     },
 
-    activeLabel: {
-        color: "#2E7D32",
-        fontWeight: "600",
+    activeTab: {
+        backgroundColor: COLORS.primary,
     },
 });
 
