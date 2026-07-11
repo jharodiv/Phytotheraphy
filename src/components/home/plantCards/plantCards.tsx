@@ -7,72 +7,93 @@ import {
     View
 } from "react-native";
 
-const plants = [
-    {
-        id: 1,
-        name: "Lagundi",
-        category: "Cold",
-        image: require("@images/home/plants/lagundi.jpg"),
-    },
-    {
-        id: 2,
-        name: "Ampalaya",
-        category: "Diabetes",
-        image: require("@images/home/plants/lagundi.jpg"),
-    },
-    {
-        id: 3,
-        name: "Aloe Vera",
-        category: "Skin Care",
-        image: require("@images/home/plants/lagundi.jpg"),
-    },
-    {
-        id: 4,
-        name: "Ginger",
-        category: "Skin Care",
-        image: require("@images/home/plants/lagundi.jpg")
-    }
-];
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+
+import { plantImages } from "@images/plants/plantImages";
+import { db } from "../../../../firebaseConfig";
+
 const PlantCardsSection = () => {
+
+    const [plants, setPlants] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchFeaturedPlants = async () => {
+            try {
+                const q = query(
+                    collection(db, "plants"),
+                    where("featured", "==", true)
+                );
+
+                const snapshot = await getDocs(q);
+
+                const featuredPlants = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                setPlants(featuredPlants);
+            } catch (error) {
+                console.error("Error fetching featured plants:", error);
+            }
+        };
+
+        fetchFeaturedPlants();
+    }, []);
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Popular Medicinal Plant</Text>
+                <Text style={styles.title}>
+                    Popular Medicinal Plants
+                </Text>
 
-                {/* <TouchableOpacity activeOpacity={0.7}>
+                {/* Future implementation */}
+                {/* 
+                <TouchableOpacity activeOpacity={0.7}>
                     <Text style={styles.seeAll}>See All</Text>
-                </TouchableOpacity> */}
-                
+                </TouchableOpacity>
+                */}
             </View>
 
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.plantList}
-                >
-                    {plants.map((plant) => (
-                        <TouchableOpacity
-                            key={plant.id}
-                            style={styles.card}
-                            activeOpacity={0.8}
-                        >
-                            <Image
-                                source={plant.image}
-                                style={styles.image}
-                                resizeMode="cover"
-                            />
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.plantList}
+            >
+                {plants.map((plant) => (
+                    <TouchableOpacity
+                        key={plant.id}
+                        style={styles.card}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            console.log(plant);
+                            // router.push(`/plant/${plant.id}`);
+                        }}
+                    >
+                        <Image
+                            source={plantImages[plant.id]}
+                            style={styles.image}
+                            resizeMode="cover"
+                        />
 
-                            <View style={styles.info}>
-                                <Text style={styles.plantName}>
-                                    {plant.name}
-                                </Text>
-                                <Text style={styles.plantCategory}>
-                                    {plant.category}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
+                        <View style={styles.info}>
+                            <Text style={styles.plantName}>
+                                {plant.commonName}
+                            </Text>
+
+                            <Text style={styles.plantCategory}>
+                                {plant.scientificName}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
         </View>
     );
 };
