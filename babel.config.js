@@ -10,8 +10,8 @@ module.exports = function (api) {
           path: ".env",
           allowUndefined: false,
         },
-        "react-native-reanimated/plugin",
       ],
+        "react-native-reanimated/plugin",
     ],
   };
 };

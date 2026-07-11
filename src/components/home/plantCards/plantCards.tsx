@@ -39,9 +39,10 @@ const PlantCardsSection = () => {
             <View style={styles.header}>
                 <Text style={styles.title}>Popular Medicinal Plant</Text>
 
-                <TouchableOpacity activeOpacity={0.7}>
-                <Text style={styles.seeAll}>See All</Text>
-                </TouchableOpacity>
+                {/* <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.seeAll}>See All</Text>
+                </TouchableOpacity> */}
+                
             </View>
 
                 <ScrollView
