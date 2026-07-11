@@ -1,13 +1,8 @@
 import styles from "@components/home/categories/categories.style";
+import { useCategoriesLogic } from "@components/home/categories/useCategories";
 import { plantImages } from "@images/plants/plantImages";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-} from 'firebase/firestore';
-import { useState } from "react";
 import {
     FlatList,
     Image,
@@ -17,177 +12,193 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { db } from "../../../../firebaseConfig";
 
-type UICategory = (typeof categories)[number];
-
-    const categories = [
-    {
-        id: "all",
-        label: "All",
-        icon: require("@images/home/categoriesAll.png"),
-    },
-    {
-        id: "cold",
-        label: "Cold",
-        icon: require("@images/home/lung.png"),
-    },
-    {
-        id: "digestive",
-        label: "Digestive",
-        icon: require("@images/home/stomach.png"),
-    },
-    {
-        id: "skincare",
-        label: "Skin Care",
-        icon: require("@images/home/face.png"),
-    },
-    {
-        id: "diabetes",
-        label: "Diabetes",
-        icon: require("@images/home/diabetis.png"),
-    },
-    ];
-
-    const fetchPlants = async (categoryId : string) => {
-        const plantsRef = collection(db, "plants");
-
-        const q =
-            categoryId === "all"
-            ? plantsRef
-            : query(
-                plantsRef,
-                where("categories", "array-contains", categoryId)
-            );
-
-        const snapshot = await getDocs(q);
-
-        return snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-    };
-
-    const CategorySection = () => {
-    const [selectedCategory, setSelectedCategory] =
-        useState<UICategory | null>(null);
-
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const [filteredPlants, setFilteredPlants] = useState<any[]>([]);
-
-    const handleCategoryPress = async (category: UICategory) => {
-        setSelectedCategory(category);
-
-        const plants = await fetchPlants(category.id);
-
-        setFilteredPlants(plants);
-
-        setModalVisible(true);
-    }
+const CategorySection = () => {
+    const {
+        categories,
+        selectedCategory,
+        modalVisible,
+        filteredPlants,
+        favoriteIds,
+        setModalVisible,
+        handleCategoryPress,
+        handleFavoritePress,
+    } = useCategoriesLogic();
 
     return (
         <>
-        <View style={styles.container}>
-            <View style={styles.header}>
-            <Text style={styles.title}>Category</Text>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.title}>Category</Text>
+                </View>
 
-            {/* <TouchableOpacity activeOpacity={0.7}>
-                <Text style={styles.seeAll}>See All</Text>
-            </TouchableOpacity> */}
+                <View style={styles.categoryList}>
+                    {categories.map((category) => (
+                        <TouchableOpacity
+                            key={category.id}
+                            style={styles.categoryButton}
+                            activeOpacity={0.7}
+                            onPress={() =>
+                                handleCategoryPress(category)
+                            }
+                        >
+                            <Image
+                                source={category.icon}
+                                style={styles.icon}
+                                resizeMode="contain"
+                            />
 
+                            <Text style={styles.categoryText}>
+                                {category.label}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
 
-            <View style={styles.categoryList}>
-            {categories.map((category) => (
-                <TouchableOpacity
-                key={category.id}
-                style={styles.categoryButton}
-                activeOpacity={0.7}
-                onPress={() => handleCategoryPress(category)}
-                >
-                <Image
-                    source={category.icon}
-                    style={styles.icon}
-                    resizeMode="contain"
-                />
-
-                <Text style={styles.categoryText}>{category.label}</Text>
-                </TouchableOpacity>
-            ))}
-            </View>
-        </View>
-
-        <Modal
-        visible={modalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-        >
-        <Pressable
-            style={styles.modalOverlay}
-            onPress={() => setModalVisible(false)}
-        >
-            <Pressable
-            style={styles.modalContainer}
-            onPress={() => {}}
+            <Modal
+                visible={modalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() =>
+                    setModalVisible(false)
+                }
             >
-            <View style={styles.modalHandle} />
-
-            <Text style={styles.modalTitle}>
-                {selectedCategory?.label}
-            </Text>
-
-            <View style={{ marginTop: 16, maxHeight: 400 }}>
-            {filteredPlants.length > 0 ? (
-                <FlatList
-                data={filteredPlants}
-                keyExtractor={(item: any) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                <TouchableOpacity
-                    style={styles.plantItem}
-                    activeOpacity={0.8}
+                <Pressable
+                    style={styles.modalOverlay}
+                    onPress={() =>
+                        setModalVisible(false)
+                    }
                 >
-                    <Image
-                    source={plantImages[item.id]}
-                    style={styles.plantImage}
-                    resizeMode="cover"
-                    />
-
-                    <LinearGradient
-                    colors={["transparent", "rgba(0,0,0,0.75)"]}
-                    style={styles.gradient}
+                    <Pressable
+                        style={styles.modalContainer}
+                        onPress={() => {}}
                     >
-                    <Text style={styles.plantName}>
-                        {item.commonName}
-                    </Text>
+                        <View style={styles.modalHandle} />
 
-                    <Text style={styles.scientificName}>
-                        {item.scientificName}
-                    </Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-                )}
-                />
-            ) : (
-                <Text style={styles.modalDescription}>
-                No medicinal plants found.
-                </Text>
-            )}
-            </View> // MODAL BODY
+                        <Text style={styles.modalTitle}>
+                            {selectedCategory?.label}
+                        </Text>
 
-            <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
-            >
-                <Text style={styles.closeButtonText}>
-                Close
-                </Text>
-            </TouchableOpacity>
-            </Pressable>
-        </Pressable>
-        </Modal>
+                        <View
+                            style={{
+                                marginTop: 16,
+                                maxHeight: 400,
+                            }}
+                        >
+                            {filteredPlants.length > 0 ? (
+                                <FlatList
+                                    data={filteredPlants}
+                                    keyExtractor={(item: any) =>
+                                        item.id
+                                    }
+                                    showsVerticalScrollIndicator={false}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            style={styles.plantItem}
+                                            activeOpacity={0.8}
+                                        >
+                                            <Image
+                                                source={
+                                                    plantImages[item.id]
+                                                }
+                                                style={
+                                                    styles.plantImage
+                                                }
+                                                resizeMode="cover"
+                                            />
+
+                                            {/* Bookmark */}
+                                            <TouchableOpacity
+                                                style={
+                                                    styles.bookmarkButton
+                                                }
+                                                activeOpacity={0.8}
+                                                onPress={() =>
+                                                    handleFavoritePress(
+                                                        item.id
+                                                    )
+                                                }
+                                            >
+                                                <MaterialCommunityIcons
+                                                    name={
+                                                        favoriteIds.includes(
+                                                            item.id
+                                                        )
+                                                            ? "bookmark"
+                                                            : "bookmark-outline"
+                                                    }
+                                                    size={24}
+                                                    color={
+                                                        favoriteIds.includes(
+                                                            item.id
+                                                        )
+                                                            ? "#FFD54F"
+                                                            : "#FFFFFF"
+                                                    }
+                                                />
+                                            </TouchableOpacity>
+
+                                            <LinearGradient
+                                                colors={[
+                                                    "transparent",
+                                                    "rgba(0,0,0,0.75)",
+                                                ]}
+                                                style={
+                                                    styles.gradient
+                                                }
+                                            >
+                                                <Text
+                                                    style={
+                                                        styles.plantName
+                                                    }
+                                                >
+                                                    {
+                                                        item.commonName
+                                                    }
+                                                </Text>
+
+                                                <Text
+                                                    style={
+                                                        styles.scientificName
+                                                    }
+                                                >
+                                                    {
+                                                        item.scientificName
+                                                    }
+                                                </Text>
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                            ) : (
+                                <Text
+                                    style={
+                                        styles.modalDescription
+                                    }
+                                >
+                                    No medicinal plants found.
+                                </Text>
+                            )}
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() =>
+                                setModalVisible(false)
+                            }
+                        >
+                            <Text
+                                style={
+                                    styles.closeButtonText
+                                }
+                            >
+                                Close
+                            </Text>
+                        </TouchableOpacity>
+                    </Pressable>
+                </Pressable>
+            </Modal>
         </>
     );
 };

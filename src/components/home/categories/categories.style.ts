@@ -186,6 +186,23 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "absolute",
   },
+
+  bookmarkButton: {
+      position: "absolute",
+      top: 12,
+      right: 12,
+
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+
+      justifyContent: "center",
+      alignItems: "center",
+
+      backgroundColor: "rgba(0,0,0,0.35)",
+
+      zIndex: 5,
+  },
 });
 
 export default styles;
