@@ -9,7 +9,7 @@ export type UserModel = {
   updated_at: Timestamp;
 };
 
-export type HerbModel = {
+export type PlantModel = {
   id: string;
   scientific_name: string;
   description: string;

@@ -1,17 +1,9 @@
+import styles from "@components/home/favorites/favorites.style";
 import Footer from "@components/home/footer/footer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-
-import {
-    collection,
-    doc,
-    getDocs,
-    query,
-    updateDoc,
-    where,
-} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     Dimensions,
@@ -20,83 +12,59 @@ import {
     SafeAreaView,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 
-import styles from "@components/home/favorites/favorites.style";
 import { plantImages } from "@images/plants/plantImages";
-import { db } from "../../../../firebaseConfig";
+
+import {
+    getFavoritePlants,
+    removeFavorite
+} from "@services/favorites/favorites.service";
+
 
 type Plant = {
     id: string;
     commonName: string;
     scientificName: string;
-    favorite: boolean;
 };
 
 const { width, height } = Dimensions.get("window");
 
-const FavoritesScreen = () => {
-    const [favorites, setFavorites] = useState<Plant[]>([]);
+export default function FavoritesScreen() {
+    const [plants, setPlants] = useState<Plant[]>([]);
 
+    useEffect(() => {
+        loadFavorites();
+    }, []);
 
-    const toggleFavorite = async (plant: Plant) => {
-    try {
-        const plantRef = doc(db, "plants", plant.id);
-
-        await Haptics.selectionAsync();
-
-        await updateDoc(plantRef, {
-            favorite: !plant.favorite,
-        });
-
-        if (plant.favorite) {
-            // Remove it immediately from the favorites screen
-            setFavorites((prev) =>
-                prev.filter((p) => p.id !== plant.id)
-            );
-        } else {
-            // Update local state
-            setFavorites((prev) =>
-                prev.map((p) =>
-                    p.id === plant.id
-                        ? { ...p, favorite: true }
-                        : p
-                )
-            );
-        }
+    const loadFavorites = async () => {
+        try {
+            const plants = await getFavoritePlants();
+            setPlants(plants as Plant[]);
         } catch (err) {
             console.log(err);
         }
     };
 
-    useEffect(() => {
-        const fetchFavorites = async () => {
-            try {
-                const q = query(
-                    collection(db, "plants"),
-                    where("favorite", "==", true)
-                );
+    const handleToggleFavorite = async (plantId: string) => {
+        await removeFavorite(plantId);
 
-                const snapshot = await getDocs(q);
+        try {
+            await Haptics.selectionAsync();
 
-                const plants = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                })) as Plant[];
+            await removeFavorite(plantId);
 
-                setFavorites(plants);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchFavorites();
-    }, []);
+            setPlants((prev) =>
+                prev.filter((plant) => plant.id !== plantId)
+            );
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Decorative background leaf */}
             <MaterialCommunityIcons
                 name="leaf"
                 size={Math.max(width, height) * 0.7}
@@ -104,7 +72,6 @@ const FavoritesScreen = () => {
                 style={styles.backgroundLeaf}
             />
 
-            {/* Header */}
             <View style={styles.headerContainer}>
                 <TouchableOpacity
                     style={styles.backButton}
@@ -124,7 +91,7 @@ const FavoritesScreen = () => {
             </View>
 
             <FlatList
-                data={favorites}
+                data={plants}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.list}
@@ -149,17 +116,21 @@ const FavoritesScreen = () => {
                             style={styles.plantImage}
                             resizeMode="cover"
                         />
+
                         <TouchableOpacity
                             style={styles.bookmarkContainer}
                             activeOpacity={0.8}
-                            onPress={() => toggleFavorite(item)}
+                            onPress={() =>
+                                handleToggleFavorite(item.id)
+                            }
                         >
                             <MaterialCommunityIcons
-                                name={item.favorite ? "bookmark" : "bookmark-outline"}
+                                name="bookmark"
                                 size={22}
-                                color={item.favorite ? "#FFD54F" : "#FFFFFF"}
+                                color="#FFD54F"
                             />
                         </TouchableOpacity>
+
                         <LinearGradient
                             colors={[
                                 "transparent",
@@ -183,6 +154,4 @@ const FavoritesScreen = () => {
             <Footer />
         </SafeAreaView>
     );
-};
-
-export default FavoritesScreen;
+}
