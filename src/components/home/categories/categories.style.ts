@@ -168,9 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     overflow: "hidden",
     marginBottom: 18,
-
     backgroundColor: "#EEE",
-
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

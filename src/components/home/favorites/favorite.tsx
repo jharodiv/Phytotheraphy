@@ -48,8 +48,6 @@ export default function FavoritesScreen() {
     };
 
     const handleToggleFavorite = async (plantId: string) => {
-        await removeFavorite(plantId);
-
         try {
             await Haptics.selectionAsync();
 

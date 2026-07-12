@@ -1,13 +1,10 @@
 import { getPlantsByIds } from "@services/favorites/plants.service";
 import {
-    addDoc,
-    collection,
-    deleteDoc,
+    arrayRemove,
+    arrayUnion,
     doc,
-    getDocs,
-    query,
-    serverTimestamp,
-    where
+    getDoc,
+    updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 
@@ -22,10 +19,9 @@ export type FavoritePlant = {
     image: string;
 };
 
-const FAVORITES = "favorites";
-const PLANTS = "plants";
+const USERS = "users";
 
-export const getCurrentUserId = () => {
+export const getCurrentUserId = (): string => {
     const user = auth.currentUser;
 
     if (!user) {
@@ -35,80 +31,65 @@ export const getCurrentUserId = () => {
     return user.uid;
 };
 
-export const getFavoritePlantIds = async (): Promise<string[]> => {
+const getUserRef = () => {
     const uid = getCurrentUserId();
-
-    const q = query(
-        collection(db, FAVORITES),
-        where("user_id", "==", uid)
-    );
-
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((doc) => doc.data().plant_id as string);
+    return doc(db, USERS, uid);
 };
 
-export const getFavoritePlants = async () => {
+export const getFavoritePlantIds = async (): Promise<string[]> => {
+    const userRef = getUserRef();
+    const snapshot = await getDoc(userRef);
+
+    if (!snapshot.exists()) {
+        return [];
+    }
+
+    const data = snapshot.data();
+
+    return data.favorites ?? [];
+};
+
+export const getFavoritePlants = async (): Promise<FavoritePlant[]> => {
     const ids = await getFavoritePlantIds();
+
+    if (ids.length === 0) {
+        return [];
+    }
 
     return getPlantsByIds(ids);
 };
 
 export const isFavorite = async (
     plantId: string
-    ): Promise<boolean> => {
-    const uid = getCurrentUserId();
+): Promise<boolean> => {
+    const favorites = await getFavoritePlantIds();
 
-    const q = query(
-        collection(db, FAVORITES),
-        where("user_id", "==", uid),
-        where("plant_id", "==", plantId)
-    );
-
-    const snapshot = await getDocs(q);
-
-    return !snapshot.empty;
+    return favorites.includes(plantId);
 };
 
 export const addFavorite = async (
     plantId: string
-    ): Promise<void> => {
-    const uid = getCurrentUserId();
+): Promise<void> => {
+    const userRef = getUserRef();
 
-    const exists = await isFavorite(plantId);
-
-    if (exists) return;
-
-    await addDoc(collection(db, FAVORITES), {
-        user_id: uid,
-        plant_id: plantId,
-        created_at: serverTimestamp(),
+    await updateDoc(userRef, {
+        favorites: arrayUnion(plantId),
     });
 };
 
 export const removeFavorite = async (
     plantId: string
-    ): Promise<void> => {
-    const uid = getCurrentUserId();
+): Promise<void> => {
+    const userRef = getUserRef();
 
-    const q = query(
-        collection(db, FAVORITES),
-        where("user_id", "==", uid),
-        where("plant_id", "==", plantId)
-    );
-
-    const snapshot = await getDocs(q);
-
-    await Promise.all(
-        snapshot.docs.map((favorite) =>
-        deleteDoc(doc(db, FAVORITES, favorite.id))
-        )
-    );
+    await updateDoc(userRef, {
+        favorites: arrayRemove(plantId),
+    });
 };
 
 export const toggleFavorite = async (
     plantId: string
-    ): Promise<boolean> => {
+): Promise<boolean> => {
     const favorite = await isFavorite(plantId);
 
     if (favorite) {
