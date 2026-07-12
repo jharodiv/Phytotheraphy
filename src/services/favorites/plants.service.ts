@@ -1,11 +1,13 @@
 import {
     collection,
     doc,
+    documentId,
     getDoc,
     getDocs,
     query,
     where,
 } from "firebase/firestore";
+
 import { db } from "../../../firebaseConfig";
 
 export type Plant = {
@@ -45,14 +47,41 @@ export const getPlantById = async (
 
 export const getPlantsByIds = async (
     ids: string[]
-    ): Promise<Plant[]> => {
+): Promise<Plant[]> => {
     if (ids.length === 0) return [];
 
-    const plants = await Promise.all(
-        ids.map((id) => getPlantById(id))
+    // Firestore "in" queries support up to 30 values.
+    const chunkSize = 30;
+    const chunks: string[][] = [];
+
+    for (let i = 0; i < ids.length; i += chunkSize) {
+        chunks.push(ids.slice(i, i + chunkSize));
+    }
+
+    const snapshots = await Promise.all(
+        chunks.map((chunk) =>
+            getDocs(
+                query(
+                    collection(db, PLANTS),
+                    where(documentId(), "in", chunk)
+                )
+            )
+        )
     );
 
-    return plants.filter(Boolean) as Plant[];
+    const plants = snapshots.flatMap((snapshot) =>
+        snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...(doc.data() as Omit<Plant, "id">),
+        }))
+    );
+
+    // Preserve the original order of the IDs
+    const plantMap = new Map(plants.map((plant) => [plant.id, plant]));
+
+    return ids
+        .map((id) => plantMap.get(id))
+        .filter((plant): plant is Plant => plant !== undefined);
 };
 
 export const getFeaturedPlants = async (): Promise<Plant[]> => {
