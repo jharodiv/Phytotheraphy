@@ -1,4 +1,4 @@
-import { getPlantsByIds } from "@services/favorites/plants.service";
+import { getPlantsByIds } from "@services/plants/plants.service";
 import {
     arrayRemove,
     arrayUnion,
