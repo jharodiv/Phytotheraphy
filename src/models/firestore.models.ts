@@ -4,7 +4,9 @@ export type UserModel = {
   id: string; // uid
   role: string;
   email: string;
-  name: string;
+  userName: string;
+  fullName: string;
+  photoURL: string;
   created_at: Timestamp;
   updated_at: Timestamp;
 };
