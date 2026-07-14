@@ -1,4 +1,4 @@
-import { identifyPlant } from "@services/gemini.service";
+import { identifyPlant } from "@services/ai/gemini.service";
 import { searchHerbImage } from "@services/unsplash.service";
 
 import { CameraView, useCameraPermissions } from "expo-camera";
