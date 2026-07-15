@@ -50,6 +50,20 @@ export type FavoriteModel = {
 export type HistoryModel = {
   id: string;
   user_id: string;
-  search_term: string;
-  searched_at: Timestamp;
-};
+
+  commonName: string;
+  scientificName: string;
+
+  family: string;
+  description: string;
+
+  medicinalProperties: string;
+
+  uses: string;
+  preparation: string;
+  origin: string;
+
+  confidence: number;
+
+  scanned_at: Timestamp;
+}

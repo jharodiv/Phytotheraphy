@@ -146,7 +146,7 @@ export async function identifyPlant(
       };
     }
 
-    return {
+    return {  
       commonName: parsed.commonName,
       scientificName: parsed.scientificName,
       family: parsed.family,
