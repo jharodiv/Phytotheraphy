@@ -1,27 +1,20 @@
+import { FavoriteModel } from "@models/firestore.models";
 import { getPlantsByIds } from "@services/plants/plants.service";
 import {
-    arrayRemove,
-    arrayUnion,
+    addDoc,
+    collection,
+    deleteDoc,
     doc,
-    getDoc,
-    updateDoc,
+    getDocs,
+    query,
+    serverTimestamp,
+    where,
 } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 
-export type FavoritePlant = {
-    id: string;
-    commonName: string;
-    scientificName: string;
-    aliases: string[];
-    categories: string[];
-    featured: boolean;
-    verified: boolean;
-    image: string;
-};
+const FAVORITES = "favorites";
 
-const USERS = "users";
-
-export const getCurrentUserId = (): string => {
+const getCurrentUserId = (): string => {
     const user = auth.currentUser;
 
     if (!user) {
@@ -31,72 +24,124 @@ export const getCurrentUserId = (): string => {
     return user.uid;
 };
 
-const getUserRef = () => {
+const favoritesRef = collection(db, FAVORITES);
+
+/**
+ * Returns all favorite records of the current user.
+ */
+export const getFavorites = async (): Promise<FavoriteModel[]> => {
     const uid = getCurrentUserId();
-    return doc(db, USERS, uid);
+
+    const q = query(
+        favoritesRef,
+        where("user_id", "==", uid)
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...(docSnap.data() as Omit<FavoriteModel, "id">),
+    }));
 };
 
-export const getFavoritePlantIds = async (): Promise<string[]> => {
-    const userRef = getUserRef();
-    const snapshot = await getDoc(userRef);
+/**
+ * Returns all favorite herb ids.
+ */
+export const getFavoriteHerbIds = async (): Promise<string[]> => {
+    const favorites = await getFavorites();
 
-    if (!snapshot.exists()) {
+    return favorites.map((favorite) => favorite.herb_id);
+};
+
+/**
+ * Returns all favorite plants.
+ */
+export const getFavoritePlants = async () => {
+    const herbIds = await getFavoriteHerbIds();
+
+    if (herbIds.length === 0) {
         return [];
     }
 
-    const data = snapshot.data();
-
-    return data.favorites ?? [];
+    return getPlantsByIds(herbIds);
 };
 
-export const getFavoritePlants = async (): Promise<FavoritePlant[]> => {
-    const ids = await getFavoritePlantIds();
-
-    if (ids.length === 0) {
-        return [];
-    }
-
-    return getPlantsByIds(ids);
-};
-
+/**
+ * Checks whether the herb is already favorited.
+ */
 export const isFavorite = async (
-    plantId: string
+    herbId: string
 ): Promise<boolean> => {
-    const favorites = await getFavoritePlantIds();
+    const uid = getCurrentUserId();
 
-    return favorites.includes(plantId);
+    const q = query(
+        favoritesRef,
+        where("user_id", "==", uid),
+        where("herb_id", "==", herbId)
+    );
+
+    const snapshot = await getDocs(q);
+
+    return !snapshot.empty;
 };
 
+/**
+ * Creates a favorite record.
+ */
 export const addFavorite = async (
-    plantId: string
+    herbId: string
 ): Promise<void> => {
-    const userRef = getUserRef();
+    const uid = getCurrentUserId();
 
-    await updateDoc(userRef, {
-        favorites: arrayUnion(plantId),
+    const exists = await isFavorite(herbId);
+
+    if (exists) return;
+
+    await addDoc(favoritesRef, {
+        user_id: uid,
+        herb_id: herbId,
+        created_at: serverTimestamp(),
     });
 };
 
+/**
+ * Deletes a favorite record.
+ */
 export const removeFavorite = async (
-    plantId: string
+    herbId: string
 ): Promise<void> => {
-    const userRef = getUserRef();
+    const uid = getCurrentUserId();
 
-    await updateDoc(userRef, {
-        favorites: arrayRemove(plantId),
-    });
+    const q = query(
+        favoritesRef,
+        where("user_id", "==", uid),
+        where("herb_id", "==", herbId)
+    );
+
+    const snapshot = await getDocs(q);
+
+    const deletions = snapshot.docs.map((favoriteDoc) =>
+        deleteDoc(doc(db, FAVORITES, favoriteDoc.id))
+    );
+
+    await Promise.all(deletions);
 };
 
+/**
+ * Toggles favorite status.
+ * Returns true if favorited, false if removed.
+ */
 export const toggleFavorite = async (
-    plantId: string
+    herbId: string
 ): Promise<boolean> => {
-    const favorite = await isFavorite(plantId);
+    const favorite = await isFavorite(herbId);
 
     if (favorite) {
-        await removeFavorite(plantId);
+        await removeFavorite(herbId);
         return false;
     }
 
-    await addFavorite(plantId);
+    await addFavorite(herbId);
     return true;
 };
