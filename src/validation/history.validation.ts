@@ -1,34 +1,52 @@
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-} from "firebase/firestore";
+import { z } from "zod";
 
-import { auth, db } from "../../firebaseConfig";
+export const HistorySchema = z.object({
+    commonName: z
+        .string()
+        .trim()
+        .min(1, "Common name is required.")
+        .max(100, "Common name is too long."),
 
-const COLLECTION = "history";
+    scientificName: z
+        .string()
+        .trim()
+        .min(1, "Scientific name is required.")
+        .max(150, "Scientific name is too long."),
 
-export async function getExistingHistory(
-    scientificName: string
-): Promise<string | null> {
-    const user = auth.currentUser;
+    family: z
+        .string()
+        .trim()
+        .min(1, "Family is required.")
+        .max(100, "Family is too long."),
 
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    description: z
+        .string()
+        .trim()
+        .min(1, "Description is required."),
 
-    const snapshot = await getDocs(
-        query(
-            collection(db, COLLECTION),
-            where("user_id", "==", user.uid),
-            where("scientificName", "==", scientificName.trim())
-        )
-    );
+    medicinalProperties: z
+        .array(z.string().trim().min(1))
+        .min(1, "At least one medicinal property is required."),
 
-    if (snapshot.empty) {
-        return null;
-    }
+    uses: z
+        .string()
+        .trim()
+        .min(1, "Uses is required."),
 
-    return snapshot.docs[0].id;
-}
+    preparation: z
+        .string()
+        .trim()
+        .min(1, "Preparation is required."),
+
+    origin: z
+        .string()
+        .trim()
+        .min(1, "Origin is required."),
+
+    confidence: z
+        .number()
+        .min(0, "Confidence must be at least 0.")
+        .max(100, "Confidence cannot exceed 100."),
+});
+
+export type HistoryPayload = z.infer<typeof HistorySchema>;

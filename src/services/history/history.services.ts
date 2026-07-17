@@ -11,105 +11,105 @@ import {
     where,
 } from "firebase/firestore";
 
-import { auth, db } from "../../../firebaseConfig";
+import { db } from "../../../firebaseConfig";
 
 import { HistoryModel } from "@models/firestore.models";
+import {
+    HistoryPayload,
+    HistorySchema,
+} from "@validation/history.validation";
 
-import { getExistingHistory } from "@validation/history.validation";
+import { getExistingHistory } from "@helper/history/history.helper";
+import { getCurrentUser } from "@services/auth.service";
 
 const COLLECTION = "history";
 
-export type HistoryPayload = {
-    commonName: string;
-    scientificName: string;
-    family: string;
-    description: string;
-    medicinalProperties: string[];
-    uses: string;
-    preparation: string;
-    origin: string;
-    confidence: number;
-};
-
-export async function createHistory(
+/**
+ * Creates a new history record.
+ *
+ * If the herb has already been scanned by the user,
+ * the existing history is updated instead.
+ */
+export const createHistory = async (
     payload: HistoryPayload
-): Promise<void> {
+): Promise<void> => {
+    const user = getCurrentUser();
 
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    const validatedPayload = HistorySchema.parse(payload);
 
     const existingHistoryId = await getExistingHistory(
-        payload.scientificName
+        validatedPayload.scientificName
     );
 
-    if(existingHistoryId) {
-        await updateHistory(existingHistoryId, payload)
+    if (existingHistoryId) {
+        await updateHistory(
+            existingHistoryId,
+            validatedPayload
+        );
         return;
     }
 
     await addDoc(collection(db, COLLECTION), {
-
         user_id: user.uid,
 
-        commonName: payload.commonName,
-        scientificName: payload.scientificName,
+        commonName: validatedPayload.commonName,
+        scientificName: validatedPayload.scientificName,
 
-        family: payload.family,
-        description: payload.description,
+        family: validatedPayload.family,
+        description: validatedPayload.description,
 
-        medicinalProperties: payload.medicinalProperties,
+        medicinalProperties:
+            validatedPayload.medicinalProperties,
 
-        uses: payload.uses,
-        preparation: payload.preparation,
+        uses: validatedPayload.uses,
+        preparation: validatedPayload.preparation,
+        origin: validatedPayload.origin,
 
-        origin: payload.origin,
-
-        confidence: payload.confidence,
+        confidence: validatedPayload.confidence,
 
         scanned_at: serverTimestamp(),
     });
-}
+};
 
-export async function updateHistory(
+/**
+ * Updates an existing history record.
+ */
+export const updateHistory = async (
     historyId: string,
     payload: HistoryPayload
-): Promise<void> {
+): Promise<void> => {
+    const validatedPayload = HistorySchema.parse(payload);
 
     await updateDoc(
         doc(db, COLLECTION, historyId),
         {
+            commonName: validatedPayload.commonName,
+            scientificName: validatedPayload.scientificName,
 
-            commonName: payload.commonName,
-            scientificName: payload.scientificName,
-
-            family: payload.family,
-            description: payload.description,
+            family: validatedPayload.family,
+            description: validatedPayload.description,
 
             medicinalProperties:
-                payload.medicinalProperties,
+                validatedPayload.medicinalProperties,
 
-            uses: payload.uses,
-            preparation: payload.preparation,
+            uses: validatedPayload.uses,
+            preparation: validatedPayload.preparation,
+            origin: validatedPayload.origin,
 
-            origin: payload.origin,
-
-            confidence: payload.confidence,
+            confidence: validatedPayload.confidence,
 
             scanned_at: serverTimestamp(),
         }
     );
-}
+};
 
-export async function getHistory(): Promise<HistoryModel[]> {
-
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+/**
+ * Returns all history records of the current user.
+ */
+export const getHistory = async (): Promise<
+    HistoryModel[]
+> => {
+    const user = getCurrentUser();
 
     const snapshot = await getDocs(
         query(
@@ -123,24 +123,24 @@ export async function getHistory(): Promise<HistoryModel[]> {
         id: document.id,
         ...(document.data() as Omit<HistoryModel, "id">),
     }));
-}
+};
 
-export async function deleteHistory(
+/**
+ * Deletes a single history record.
+ */
+export const deleteHistory = async (
     historyId: string
-): Promise<void> {
-
+): Promise<void> => {
     await deleteDoc(
         doc(db, COLLECTION, historyId)
     );
-}
+};
 
-export async function clearHistory(): Promise<void> {
-
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+/**
+ * Deletes all history records of the current user.
+ */
+export const clearHistory = async (): Promise<void> => {
+    const user = getCurrentUser();
 
     const snapshot = await getDocs(
         query(
@@ -154,4 +154,4 @@ export async function clearHistory(): Promise<void> {
             deleteDoc(document.ref)
         )
     );
-}
+};

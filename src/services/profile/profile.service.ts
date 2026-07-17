@@ -7,6 +7,12 @@ import {
 } from "firebase/firestore";
 
 import {
+    FullNameSchema,
+    PhotoURLSchema,
+    UsernameSchema
+} from "@validation/profile.validation";
+
+import {
     updateProfile,
     User,
 } from "firebase/auth";
@@ -26,19 +32,22 @@ const COLLECTION = "users";
 /**
  * Returns the currently authenticated Firebase user.
  */
-export const getCurrentUser = (): User | null => {
-    return auth.currentUser;
+export const getCurrentUser = (): User => {
+    const user = auth.currentUser
+
+    if (!user){
+        throw new Error ("User is not authenticated");
+    }
+
+    return user;
 };
 
 /**
  * Creates a Firestore profile document if it doesn't exist.
  */
 export const createUserProfile = async () => {
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    
+    const user = getCurrentUser();
 
     const userRef = doc(db, COLLECTION, user.uid);
     const snapshot = await getDoc(userRef);
@@ -59,11 +68,8 @@ export const createUserProfile = async () => {
  * Returns the user's profile.
  */
 export const getUserProfile = async (): Promise<UserProfile> => {
-    const user = auth.currentUser;
 
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    const user = getCurrentUser();
 
     const userRef = doc(db, COLLECTION, user.uid);
     const snapshot = await getDoc(userRef);
@@ -119,14 +125,12 @@ export const getUserProfile = async (): Promise<UserProfile> => {
 export const updateUsername = async (
     username: string
 ) => {
-    const user = auth.currentUser;
+    const user = getCurrentUser();
 
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    const validatedUsername = UsernameSchema.parse(username);
 
     await updateDoc(doc(db, COLLECTION, user.uid), {
-        username,
+        username: validatedUsername,
         updatedAt: serverTimestamp(),
     });
 };
@@ -139,18 +143,16 @@ export const updateUsername = async (
 export const updateFullName = async (
     fullName: string
 ) => {
-    const user = auth.currentUser;
 
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    const user = getCurrentUser();
+    const validatedName = FullNameSchema.parse(fullName);
 
     await updateProfile(user, {
-        displayName: fullName,
+        displayName: validatedName,
     });
 
     await updateDoc(doc(db, COLLECTION, user.uid), {
-        fullName,
+        fullName: validatedName,
         updatedAt: serverTimestamp(),
     });
 };
@@ -161,18 +163,15 @@ export const updateFullName = async (
 export const updateProfilePhoto = async (
     photoURL: string
 ) => {
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User is not authenticated.");
-    }
+    const user = getCurrentUser();
+    const validatedPhotoUrl = PhotoURLSchema.parse(photoURL);
 
     await updateProfile(user, {
-        photoURL,
+        photoURL: validatedPhotoUrl,
     });
 
     await updateDoc(doc(db, COLLECTION, user.uid), {
-        photoURL,
+        photoURL: validatedPhotoUrl,
         updatedAt: serverTimestamp(),
     });
 };

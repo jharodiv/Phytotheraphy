@@ -13,7 +13,8 @@
       "@services/*": ["services/*"],
       "@validation/*": ["validation/*"],
       "@scan/*": ["scan/*"],
-      "@models/*" : ["models/*"]
+      "@models/*" : ["models/*"],
+      "@helper/*" : ["helper/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

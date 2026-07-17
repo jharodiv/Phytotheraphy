@@ -66,4 +66,5 @@ export type HistoryModel = {
   confidence: number;
 
   scanned_at: Timestamp;
+  
 }
