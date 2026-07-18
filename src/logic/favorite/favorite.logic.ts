@@ -1,14 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
-
-import { getPlantsByIds } from "@services/favorites/favorites.service";
-
+import { PlantModel } from "@models/firestore.models";
 import {
     getFavoritePlants,
     toggleFavorite,
 } from "@services/favorites/favorites.service";
+import { useCallback, useEffect, useState } from "react";
 
 export const useFavoritesLogic = () => {
-    const [favorites, setFavorites] = useState<FavoritePlant[]>([]);
+    const [favorites, setFavorites] = useState<PlantModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 

@@ -1,6 +1,9 @@
 import { FavoriteModel } from "@models/firestore.models";
 import { getPlantsByIds } from "@services/plants/plants.service";
 import {
+    herbIdSchema
+} from "@validation/favorite.validation";
+import {
     addDoc,
     collection,
     deleteDoc,
@@ -73,6 +76,8 @@ export const getFavoritePlants = async () => {
 export const isFavorite = async (
     herbId: string
 ): Promise<boolean> => {
+    herbIdSchema.parse(herbId);
+    
     const uid = getCurrentUserId();
 
     const q = query(
@@ -92,6 +97,8 @@ export const isFavorite = async (
 export const addFavorite = async (
     herbId: string
 ): Promise<void> => {
+    herbIdSchema.parse(herbId);
+
     const uid = getCurrentUserId();
 
     const exists = await isFavorite(herbId);
@@ -111,6 +118,7 @@ export const addFavorite = async (
 export const removeFavorite = async (
     herbId: string
 ): Promise<void> => {
+    herbIdSchema.parse(herbId);
     const uid = getCurrentUserId();
 
     const q = query(
@@ -135,6 +143,7 @@ export const removeFavorite = async (
 export const toggleFavorite = async (
     herbId: string
 ): Promise<boolean> => {
+    herbIdSchema.parse(herbId);
     const favorite = await isFavorite(herbId);
 
     if (favorite) {
