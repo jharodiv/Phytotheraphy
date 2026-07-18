@@ -20,6 +20,10 @@ export type PlantModel = {
   origin: string;
   preparation_method: string;
   side_effect: string;
+
+  featured: boolean;
+  categories: string[];
+  verified: boolean;
 };
 
 export type HerbImageModel = {

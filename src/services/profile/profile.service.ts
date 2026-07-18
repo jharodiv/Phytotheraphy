@@ -13,11 +13,12 @@ import {
 } from "@validation/profile.validation";
 
 import {
-    updateProfile,
-    User,
+    updateProfile
 } from "firebase/auth";
 
-import { auth, db } from "../../../firebaseConfig";
+import { getCurrentUser } from "@services/auth.service";
+import { db } from "../../../firebaseConfig";
+
 
 export interface UserProfile {
     id: string;
@@ -30,23 +31,10 @@ export interface UserProfile {
 const COLLECTION = "users";
 
 /**
- * Returns the currently authenticated Firebase user.
- */
-export const getCurrentUser = (): User => {
-    const user = auth.currentUser
-
-    if (!user){
-        throw new Error ("User is not authenticated");
-    }
-
-    return user;
-};
-
-/**
  * Creates a Firestore profile document if it doesn't exist.
  */
 export const createUserProfile = async () => {
-    
+
     const user = getCurrentUser();
 
     const userRef = doc(db, COLLECTION, user.uid);
