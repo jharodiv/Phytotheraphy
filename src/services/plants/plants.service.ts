@@ -5,52 +5,64 @@ import {
     getDoc,
     getDocs,
     query,
-    where,
+    QueryDocumentSnapshot,
+    where
 } from "firebase/firestore";
 
+import { PlantModel } from "@models/firestore.models";
 import { db } from "../../../firebaseConfig";
-
-export type Plant = {
-    id: string;
-    commonName: string;
-    scientificName: string;
-    aliases: string[];
-    categories: string[];
-    featured: boolean;
-    verified: boolean;
-    image: string;
-};
 
 const PLANTS = "plants";
 
-export const getAllPlants = async (): Promise<Plant[]> => {
+// Converts a Firestore document into a PlantModel
+const mapPlant = (
+    snapshot: QueryDocumentSnapshot
+): PlantModel => ({
+    id: snapshot.id,
+    ...(snapshot.data() as Omit<PlantModel, "id">),
+});
+
+// Retrieve all plant from the firestore plants collection
+
+export const getAllPlants = async (): Promise<PlantModel[]> => {
     const snapshot = await getDocs(collection(db, PLANTS));
 
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Plant, "id">),
-    }));
+    return snapshot.docs.map(mapPlant);
 };
+
+//Retrieve a single plant by its document ID
 
 export const getPlantById = async (
     plantId: string
-    ): Promise<Plant | null> => {
+): Promise<PlantModel | null> => {
     const snapshot = await getDoc(doc(db, PLANTS, plantId));
 
-    if (!snapshot.exists()) return null;
+    if (!snapshot.exists()) {
+        return null;
+    }
 
     return {
         id: snapshot.id,
-        ...(snapshot.data() as Omit<Plant, "id">),
+        ...(snapshot.data() as Omit<PlantModel, "id">),
     };
 };
 
+/**
+ * Retrieves multiple plants using their document IDs.
+ *
+ * Firestore limits "in" queries to 30 IDs per request,
+ * so the IDs are automatically split into chunks.
+ * The returned array preserves the original order of the IDs.
+ *
+ */
+
 export const getPlantsByIds = async (
     ids: string[]
-): Promise<Plant[]> => {
-    if (ids.length === 0) return [];
+): Promise<PlantModel[]> => {
+    if (ids.length === 0) {
+        return [];
+    }
 
-    // Firestore "in" queries support up to 30 values.
     const chunkSize = 30;
     const chunks: string[][] = [];
 
@@ -70,21 +82,23 @@ export const getPlantsByIds = async (
     );
 
     const plants = snapshots.flatMap((snapshot) =>
-        snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...(doc.data() as Omit<Plant, "id">),
-        }))
+        snapshot.docs.map(mapPlant)
     );
 
-    // Preserve the original order of the IDs
     const plantMap = new Map(plants.map((plant) => [plant.id, plant]));
 
     return ids
         .map((id) => plantMap.get(id))
-        .filter((plant): plant is Plant => plant !== undefined);
+        .filter((plant): plant is PlantModel => plant !== undefined);
 };
 
-export const getFeaturedPlants = async (): Promise<Plant[]> => {
+/**
+ * Retrieves all plants marked as featured.
+ *
+ * @returns A list of featured plants.
+ */
+
+export const getFeaturedPlants = async (): Promise<PlantModel[]> => {
     const q = query(
         collection(db, PLANTS),
         where("featured", "==", true)
@@ -92,15 +106,21 @@ export const getFeaturedPlants = async (): Promise<Plant[]> => {
 
     const snapshot = await getDocs(q);
 
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Plant, "id">),
-    }));
+    return snapshot.docs.map(mapPlant);
 };
+
+/**
+ * Retrieves plants that belong to a specific category.
+ *
+ * Passing "all" returns every plant without filtering.
+ *
+ * @param category The category to filter by.
+ * @returns A list of plants in the specified category.
+ */
 
 export const getPlantsByCategory = async (
     category: string
-    ): Promise<Plant[]> => {
+): Promise<PlantModel[]> => {
     if (category === "all") {
         return getAllPlants();
     }
@@ -112,8 +132,12 @@ export const getPlantsByCategory = async (
 
     const snapshot = await getDocs(q);
 
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Plant, "id">),
-    }));
+    return snapshot.docs.map(mapPlant);
 };
+
+
+
+
+
+
+

@@ -22,6 +22,17 @@ type SignupPayload = {
   username: string;
 };
 
+
+export function getCurrentUser(): User {
+  const user = auth.currentUser;
+
+  if(!user) {
+    throw new Error ("User is not authenticated");
+  }
+
+  return user;
+}
+
 export async function signupWithEmail(payload: SignupPayload) {
   const {
     email,

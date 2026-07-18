@@ -12,7 +12,9 @@
       "@app-types/*": ["types/*"],
       "@services/*": ["services/*"],
       "@validation/*": ["validation/*"],
-      "@scan/*": ["scan/*"]
+      "@scan/*": ["scan/*"],
+      "@models/*" : ["models/*"],
+      "@helper/*" : ["helper/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

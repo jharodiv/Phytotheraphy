@@ -6,11 +6,20 @@ type Props = {
   imageUrl: string;
   photographerName: string;
   photographerUrl: string;
+
   commonName: string;
   scientificName: string;
+
+  family: string;
+  description: string;
+
   medicinalProperties: string[];
+
+  uses: string;
+  preparation: string;
   origin: string;
-  usage: string;
+
+  confidence: number;
 };
 
 export default function ResultView(props: Props) {
@@ -30,9 +39,13 @@ export default function ResultView(props: Props) {
         }}
       >
         <PlantDetails
+          family={props.family}
+          description={props.description}
           medicinalProperties={props.medicinalProperties}
+          uses={props.uses}
+          preparation={props.preparation}
           origin={props.origin}
-          usage={props.usage}
+          confidence={props.confidence}
         />
       </ScrollView>
     </View>
