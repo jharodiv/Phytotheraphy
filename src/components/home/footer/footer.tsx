@@ -19,7 +19,7 @@ const Footer = () => {
         },
         {
             icon: "bookmark-outline",
-            route: "/(favorites)",
+            route: "/(profile)",
         },
     ] as const;
 

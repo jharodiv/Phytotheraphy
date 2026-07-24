@@ -14,7 +14,8 @@
       "@validation/*": ["validation/*"],
       "@scan/*": ["scan/*"],
       "@models/*" : ["models/*"],
-      "@helper/*" : ["helper/*"]
+      "@helper/*" : ["helper/*"],
+      "@logic/*" : ["logic/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
