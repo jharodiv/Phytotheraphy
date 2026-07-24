@@ -18,7 +18,7 @@ const Footer = () => {
             route: "/camera",
         },
         {
-            icon: "bookmark-outline",
+            icon: "account",
             route: "/(profile)",
         },
     ] as const;

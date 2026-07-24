@@ -49,6 +49,16 @@ export const getFavorites = async (): Promise<FavoriteModel[]> => {
 };
 
 /**
+ * Returns the total number of favorite records
+ * of the current user.
+ */
+
+export const getFavoriteCount =  async (): Promise<number> => {
+    const favorite = await getFavorites();
+    return favorite.length;
+}
+
+/**
  * Returns all favorite herb ids.
  */
 export const getFavoriteHerbIds = async (): Promise<string[]> => {

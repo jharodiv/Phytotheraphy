@@ -28,6 +28,7 @@ export default function ProfileScreen() {
         profile,
         loading,
         saving,
+        favoriteCount,
         saveUsername,
         saveFullName,
         savePhoto,
@@ -176,7 +177,7 @@ export default function ProfileScreen() {
                                     styles.statNumber
                                 }
                             >
-                                0
+                                {favoriteCount}
                             </Text>
 
                             <Text
