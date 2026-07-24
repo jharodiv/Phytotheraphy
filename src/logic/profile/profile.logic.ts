@@ -17,6 +17,7 @@ export const useProfileLogic = () => {
     const [loading, setLoading] = useState (true);
     const [saving, setSaving] = useState(false);
 
+    // Fetching the User Profile
     const loadProfile = useCallback(async () => {
         try {
             setLoading(true);
