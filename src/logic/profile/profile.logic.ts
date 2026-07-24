@@ -4,6 +4,7 @@ import {
     useState
 } from "react";
 
+import { getFavoriteCount } from "@services/favorites/favorites.service";
 import {
     UserProfile,
     getUserProfile,
@@ -14,6 +15,7 @@ import {
 
 export const useProfileLogic = () => {
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [favoriteCount, setFavoriteCount] = useState (0);
     const [loading, setLoading] = useState (true);
     const [saving, setSaving] = useState(false);
 
@@ -21,10 +23,12 @@ export const useProfileLogic = () => {
     const loadProfile = useCallback(async () => {
         try {
             setLoading(true);
-
             const data = await getUserProfile();
+            const favoriteCount = await getFavoriteCount();
+
 
             setProfile(data);
+            setFavoriteCount(favoriteCount);
         } finally {
             setLoading(false);
         }
@@ -108,6 +112,7 @@ export const useProfileLogic = () => {
         profile,
         loading,
         saving,
+        favoriteCount,
         reload: loadProfile,
         saveUsername,
         saveFullName,
