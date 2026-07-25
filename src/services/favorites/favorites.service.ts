@@ -1,22 +1,20 @@
-import { FavoriteModel } from "@models/firestore.models";
+                                                                  import { UserModel } from "@models/firestore.models";
 import { getPlantsByIds } from "@services/plants/plants.service";
+import { herbIdSchema } from "@validation/favorite.validation";
 import {
-    herbIdSchema
-} from "@validation/favorite.validation";
-import {
-    addDoc,
-    collection,
-    deleteDoc,
+    arrayRemove,
+    arrayUnion,
     doc,
-    getDocs,
-    query,
-    serverTimestamp,
-    where,
+    getDoc,
+    updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 
-const FAVORITES = "favorites";
+const USERS = "users";
 
+/**
+ * Returns the uid of the currently authenticated user.
+ */
 const getCurrentUserId = (): string => {
     const user = auth.currentUser;
 
@@ -27,44 +25,47 @@ const getCurrentUserId = (): string => {
     return user.uid;
 };
 
-const favoritesRef = collection(db, FAVORITES);
-
 /**
- * Returns all favorite records of the current user.
+ * Returns the Firestore document reference
+ * of the current authenticated user.
  */
-export const getFavorites = async (): Promise<FavoriteModel[]> => {
+const getUserRef = () => {
     const uid = getCurrentUserId();
-
-    const q = query(
-        favoritesRef,
-        where("user_id", "==", uid)
-    );
-
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((docSnap) => ({
-        id: docSnap.id,
-        ...(docSnap.data() as Omit<FavoriteModel, "id">),
-    }));
+    return doc(db, USERS, uid);
 };
 
 /**
- * Returns the total number of favorite records
- * of the current user.
+ * Returns the current user's Firestore document.
  */
+const getUser = async (): Promise<UserModel> => {
+    const snapshot = await getDoc(getUserRef());
 
-export const getFavoriteCount =  async (): Promise<number> => {
-    const favorite = await getFavorites();
-    return favorite.length;
-}
+    if (!snapshot.exists()) {
+        throw new Error("User document not found.");
+    }
+
+    return {
+        id: snapshot.id,
+        ...(snapshot.data() as Omit<UserModel, "id">),
+    };
+};
 
 /**
  * Returns all favorite herb ids.
  */
 export const getFavoriteHerbIds = async (): Promise<string[]> => {
-    const favorites = await getFavorites();
+    const user = await getUser();
 
-    return favorites.map((favorite) => favorite.herb_id);
+    return user.favorites ?? [];
+};
+
+/**
+ * Returns the total number of favorites.
+ */
+export const getFavoriteCount = async (): Promise<number> => {
+    const favorites = await getFavoriteHerbIds();
+
+    return favorites.length;
 };
 
 /**
@@ -81,79 +82,56 @@ export const getFavoritePlants = async () => {
 };
 
 /**
- * Checks whether the herb is already favorited.
+ * Checks whether the herb is already in the user's favorites.
  */
 export const isFavorite = async (
     herbId: string
 ): Promise<boolean> => {
     herbIdSchema.parse(herbId);
-    
-    const uid = getCurrentUserId();
 
-    const q = query(
-        favoritesRef,
-        where("user_id", "==", uid),
-        where("herb_id", "==", herbId)
-    );
+    const favorites = await getFavoriteHerbIds();
 
-    const snapshot = await getDocs(q);
-
-    return !snapshot.empty;
+    return favorites.includes(herbId);
 };
 
 /**
- * Creates a favorite record.
+ * Adds a herb to the user's favorites.
  */
 export const addFavorite = async (
     herbId: string
 ): Promise<void> => {
     herbIdSchema.parse(herbId);
 
-    const uid = getCurrentUserId();
-
-    const exists = await isFavorite(herbId);
-
-    if (exists) return;
-
-    await addDoc(favoritesRef, {
-        user_id: uid,
-        herb_id: herbId,
-        created_at: serverTimestamp(),
+    await updateDoc(getUserRef(), {
+        favorites: arrayUnion(herbId),
     });
 };
 
 /**
- * Deletes a favorite record.
+ * Removes a herb from the user's favorites.
  */
 export const removeFavorite = async (
     herbId: string
 ): Promise<void> => {
     herbIdSchema.parse(herbId);
-    const uid = getCurrentUserId();
 
-    const q = query(
-        favoritesRef,
-        where("user_id", "==", uid),
-        where("herb_id", "==", herbId)
-    );
-
-    const snapshot = await getDocs(q);
-
-    const deletions = snapshot.docs.map((favoriteDoc) =>
-        deleteDoc(doc(db, FAVORITES, favoriteDoc.id))
-    );
-
-    await Promise.all(deletions);
+    await updateDoc(getUserRef(), {
+        favorites: arrayRemove(herbId),
+    });
 };
 
 /**
- * Toggles favorite status.
- * Returns true if favorited, false if removed.
+ * Toggles a herb's favorite status.
+ *
+ * Returns:
+ * - true  -> herb was added
+ * - false -> herb was removed
  */
 export const toggleFavorite = async (
     herbId: string
 ): Promise<boolean> => {
     herbIdSchema.parse(herbId);
+
     const favorite = await isFavorite(herbId);
 
     if (favorite) {
@@ -162,5 +140,6 @@ export const toggleFavorite = async (
     }
 
     await addFavorite(herbId);
+
     return true;
 };
