@@ -7,6 +7,7 @@ export type UserModel = {
   userName: string;
   fullName: string;
   photoURL: string;
+  favorites: string[];
   created_at: Timestamp;
   updated_at: Timestamp;
 };
