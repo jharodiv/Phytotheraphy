@@ -15,11 +15,10 @@ export const useFavoritesLogic = () => {
      */
     const loadFavorites = useCallback(async () => {
         try {
-            setLoading(true);
-
             const plants = await getFavoritePlants();
-
             setFavorites(plants);
+        } catch (error) {
+            console.error("Failed to load favorites:", error);
         } finally {
             setLoading(false);
         }
@@ -42,16 +41,20 @@ export const useFavoritesLogic = () => {
      */
     const onToggleFavorite = useCallback(
         async (herbId: string) => {
-            const isStillFavorite = await toggleFavorite(herbId);
+            try {
+                const isStillFavorite = await toggleFavorite(herbId);
 
-            if (!isStillFavorite) {
-                setFavorites((previous) =>
-                    previous.filter(
-                        (plant) => plant.id !== herbId
-                    )
-                );
-            } else {
-                await loadFavorites();
+                if (!isStillFavorite) {
+                    setFavorites((previous) =>
+                        previous.filter(
+                            (plant) => plant.id !== herbId
+                        )
+                    );
+                } else {
+                    await loadFavorites();
+                }
+            } catch (error) {
+                console.error("Failed to toggle favorite:", error);
             }
         },
         [loadFavorites]

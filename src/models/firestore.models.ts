@@ -14,7 +14,9 @@ export type UserModel = {
 
 export type PlantModel = {
   id: string;
-  scientific_name: string;
+
+  commonName: string;
+  scientificName: string;
   description: string;
   uses: string;
   family: string;
