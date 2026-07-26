@@ -1,4 +1,4 @@
-                                                                  import { UserModel } from "@models/firestore.models";
+import { UserModel } from "@models/firestore.models";
 import { getPlantsByIds } from "@services/plants/plants.service";
 import { herbIdSchema } from "@validation/favorite.validation";
 import {

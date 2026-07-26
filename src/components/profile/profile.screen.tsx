@@ -10,6 +10,7 @@ import COLORS from "@constants/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
+import FavoritesScreen from "@components/home/favorites/favorite";
 import {
     ActivityIndicator,
     Alert,
@@ -326,26 +327,11 @@ export default function ProfileScreen() {
 
                 {/* ================= CONTENT ================= */}
 
-                <View
-                    style={
-                        styles.contentContainer
-                    }
-                >
-                    {selectedTab ===
-                    "favorite" ? (
-                        <Text
-                            style={
-                                styles.placeholder
-                            }
-                        >
-                            Favorite UI goes here.
-                        </Text>
+                <View style={styles.contentContainer}>
+                    {selectedTab === "favorite" ? (
+                        <FavoritesScreen />
                     ) : (
-                        <Text
-                            style={
-                                styles.placeholder
-                            }
-                        >
+                        <Text style={styles.placeholder}>
                             History UI goes here.
                         </Text>
                     )}

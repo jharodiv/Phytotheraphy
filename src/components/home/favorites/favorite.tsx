@@ -1,155 +1,207 @@
 import styles from "@components/home/favorites/favorites.style";
-import Footer from "@components/home/footer/footer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { plantImages } from "@images/plants/plantImages";
+import { useFavoritesLogic } from "@logic/favorite/favorite.logic";
+import { PlantModel } from "@models/firestore.models";
 import {
-    Dimensions,
-    FlatList,
     Image,
-    SafeAreaView,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
 
-import { plantImages } from "@images/plants/plantImages";
-
-import {
-    getFavoritePlants,
-    removeFavorite
-} from "@services/favorites/favorites.service";
-
-
-type Plant = {
-    id: string;
-    commonName: string;
-    scientificName: string;
-};
-
-const { width, height } = Dimensions.get("window");
-
 export default function FavoritesScreen() {
-    const [plants, setPlants] = useState<Plant[]>([]);
+    const {
+        favorites,
+        loading,
+        onToggleFavorite,
+    } = useFavoritesLogic();
 
-    useEffect(() => {
-        loadFavorites();
-    }, []);
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <MaterialCommunityIcons
+                    name="leaf-circle-outline"
+                    size={42}
+                    color="#2E7D32"
+                />
 
-    const loadFavorites = async () => {
-        try {
-            const plants = await getFavoritePlants();
-            setPlants(plants as Plant[]);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+                <Text style={styles.loadingText}>
+                    Loading your favorites...
+                </Text>
+            </View>
+        );
+    }
 
-    const handleToggleFavorite = async (plantId: string) => {
-        try {
-            await Haptics.selectionAsync();
+    if (favorites.length === 0) {
+        return (
+            <View style={styles.emptyContainer}>
+                <MaterialCommunityIcons
+                    name="bookmark-outline"
+                    size={58}
+                    color="#D0D5DD"
+                />
 
-            await removeFavorite(plantId);
+                <Text style={styles.emptyTitle}>
+                    No Favorite Plants
+                </Text>
 
-            setPlants((prev) =>
-                prev.filter((plant) => plant.id !== plantId)
-            );
-        } catch (err) {
-            console.log(err);
-        }
-    };
+                <Text style={styles.emptySubtitle}>
+                    Save medicinal plants to quickly access
+                    them from your profile.
+                </Text>
+            </View>
+        );
+    }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <MaterialCommunityIcons
-                name="leaf"
-                size={Math.max(width, height) * 0.7}
-                color="#2E7D32"
-                style={styles.backgroundLeaf}
-            />
+        <View style={styles.container}>
+            {/* Section Header */}
 
-            <View style={styles.headerContainer}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    activeOpacity={0.8}
-                    onPress={() => router.replace("/(tabs)")}
+            <View
+                style={{
+                    marginBottom: 20,
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 22,
+                        fontWeight: "700",
+                        color: "#111827",
+                    }}
                 >
-                    <MaterialCommunityIcons
-                        name="arrow-left"
-                        size={24}
-                        color="#2E7D32"
-                    />
-                </TouchableOpacity>
-
-                <Text style={styles.header}>
                     Favorite Plants
+                </Text>
+
+                <Text
+                    style={{
+                        marginTop: 4,
+                        color: "#6B7280",
+                        fontSize: 14,
+                    }}
+                >
+                    {favorites.length} saved medicinal
+                    {favorites.length > 1
+                        ? " plants"
+                        : " plant"}
                 </Text>
             </View>
 
-            <FlatList
-                data={plants}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.list}
-                ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyTitle}>
-                            No favorite plants yet
-                        </Text>
+            {/* Cards */}
 
-                        <Text style={styles.emptySubtitle}>
-                            Tap the bookmark icon on a plant to save it here.
-                        </Text>
-                    </View>
-                }
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.plantItem}
-                        activeOpacity={0.85}
-                    >
-                        <Image
-                            source={plantImages[item.id]}
-                            style={styles.plantImage}
-                            resizeMode="cover"
-                        />
+            {favorites.map((plant: PlantModel) => (
+                <View
+                    key={plant.id}
+                    style={styles.card}
+                >
+                    <Image
+                        source={plantImages[plant.id]}
+                        style={styles.image}
+                        resizeMode="cover"
+                    />
 
-                        <TouchableOpacity
-                            style={styles.bookmarkContainer}
-                            activeOpacity={0.8}
-                            onPress={() =>
-                                handleToggleFavorite(item.id)
+                    <View style={styles.info}>
+                        {/* Header */}
+
+                        <View style={styles.header}>
+                            <View style={{ flex: 1 }}>
+                                <Text
+                                    numberOfLines={1}
+                                    style={styles.commonName}
+                                >
+                                    {plant.commonName}
+                                </Text>
+
+                                <Text
+                                    numberOfLines={1}
+                                    style={
+                                        styles.scientificName
+                                    }
+                                >
+                                    {plant.scientificName}
+                                </Text>
+                            </View>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={
+                                    styles.favoriteButton
+                                }
+                                onPress={() =>
+                                    onToggleFavorite(
+                                        plant.id
+                                    )
+                                }
+                            >
+                                <MaterialCommunityIcons
+                                    name="bookmark"
+                                    size={20}
+                                    color="#F4B400"
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Family */}
+
+                        <View style={styles.familyBadge}>
+                            <MaterialCommunityIcons
+                                name="leaf"
+                                size={14}
+                                color="#2E7D32"
+                            />
+
+                            <Text
+                                style={styles.family}
+                            >
+                                {plant.family}
+                            </Text>
+                        </View>
+
+                        {/* Categories */}
+
+                        <View
+                            style={
+                                styles.badgeContainer
                             }
                         >
-                            <MaterialCommunityIcons
-                                name="bookmark"
-                                size={22}
-                                color="#FFD54F"
-                            />
-                        </TouchableOpacity>
+                            {plant.categories
+                                .slice(0, 2)
+                                .map((category) => (
+                                    <View
+                                        key={category}
+                                        style={
+                                            styles.badge
+                                        }
+                                    >
+                                        <Text
+                                            style={
+                                                styles.badgeText
+                                            }
+                                        >
+                                            {category}
+                                        </Text>
+                                    </View>
+                                ))}
 
-                        <LinearGradient
-                            colors={[
-                                "transparent",
-                                "rgba(0,0,0,0.25)",
-                                "rgba(0,0,0,0.9)",
-                            ]}
-                            style={styles.gradient}
-                        >
-                            <Text style={styles.plantName}>
-                                {item.commonName}
-                            </Text>
-
-                            <Text style={styles.scientificName}>
-                                {item.scientificName}
-                            </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                )}
-            />
-
-            <Footer />
-        </SafeAreaView>
+                            {plant.featured && (
+                                <View
+                                    style={
+                                        styles.badge
+                                    }
+                                >
+                                    <Text
+                                        style={
+                                            styles.badgeText
+                                        }
+                                    >
+                                        ★ Featured
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            ))}
+        </View>
     );
 }
