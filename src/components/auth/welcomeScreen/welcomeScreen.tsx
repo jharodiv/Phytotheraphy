@@ -5,9 +5,7 @@ import { useEffect, useRef } from "react";
 import {
     Animated,
     Easing,
-    Image,
-    Text,
-    View,
+    View
 } from "react-native";
 
 const WelcomeScreen = () => {
@@ -87,10 +85,9 @@ const WelcomeScreen = () => {
             onPress={() => router.push("/(auth)/register")}
             style={styles.registerButton}
         />
+        {/*<Text style={styles.orText}>or</Text>*/}
 
-        <Text style={styles.orText}>or</Text>
-
-        <AuthButton
+        {/*<AuthButton
             title="Continue with Google"
             onPress={() => router.push("/(auth)/register")}
             style={styles.registerButton}
@@ -101,7 +98,7 @@ const WelcomeScreen = () => {
                 resizeMode="contain"
                 />
             }
-            />
+            />*/}
         </Animated.View>
         </View>
     );
