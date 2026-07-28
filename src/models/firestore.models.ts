@@ -92,6 +92,4 @@ export type PlantCacheModel = {
   generatedAt: Timestamp;
   lastAccessedAt: Timestamp;
   expiresAt: Timestamp;
-
-  model: string;
 }
