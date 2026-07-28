@@ -75,3 +75,23 @@ export type HistoryModel = {
   scanned_at: Timestamp;
   
 }
+
+/* For Cache */
+
+export type PlantCacheModel = {
+  commonName: string;
+  scientificName: string;
+  family: string;
+  description: string;
+  medicinalProperties: string;
+  uses: string;
+  preparation_method: string;
+  origin: string;
+  side_effect: string;
+
+  generatedAt: Timestamp;
+  lastAccessedAt: Timestamp;
+  expiresAt: Timestamp;
+
+  model: string;
+}
