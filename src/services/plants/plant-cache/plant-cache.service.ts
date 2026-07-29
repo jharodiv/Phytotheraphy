@@ -1,9 +1,10 @@
 import {
+    deleteDoc,
     doc,
     getDoc,
     setDoc,
     Timestamp,
-    updateDoc,
+    updateDoc
 } from "firebase/firestore";
 
 import { PlantCacheModel } from "@models/firestore.models";
@@ -13,6 +14,8 @@ import { getPlantCacheId } from "utils/plant-cache/plant-cache.utils";
 import { db } from '../../../../firebaseConfig';
 
 const PLANT_CACHE = "plant_cache";
+const CACHE_DURATION_DAYS = 180; // DAYS
+const DAYS_IN_MS = 24 * 60 * 60 * 100;
 
 // READS if the plant is already cached
 
@@ -21,11 +24,20 @@ export async function getCachedPlant(
 ): Promise<PlantCacheModel | null> {
     const id = getPlantCacheId(scientificName);
 
+    const documentRef = doc(db, PLANT_CACHE, id);
+
     const snapshot = await getDoc(
         doc(db, PLANT_CACHE, id)
     );
 
     if (!snapshot.exists()){
+        return null;
+    }
+
+    const cache = snapshot.data() as PlantCacheModel;
+
+    if(cache.expiresAt.toMillis() <= Timestamp.now().toMillis()){
+        await deleteDoc(documentRef);
         return null;
     }
 
@@ -44,7 +56,7 @@ export async function saveCachedPlant(
         generatedAt: now,
         lastAccessedAt: now,
         expiresAt: Timestamp.fromMillis(
-            now.toMillis() + 180 * 24 * 60 * 60 * 1000 // 180 days
+            now.toMillis() + CACHE_DURATION_DAYS * DAYS_IN_MS
         ),
     };
 
