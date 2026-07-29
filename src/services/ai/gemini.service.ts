@@ -1,4 +1,5 @@
 import { GEMINI_API_KEY } from "@env";
+import { getPlant } from "@services/plants/plant-cache/plant-cache.service";
 
 const MODEL_NAME = "gemini-2.5-flash";
 
@@ -164,4 +165,17 @@ export async function identifyPlant(
       error: "Failed to identify the plant. Please try again.",
     };
   }
+}
+
+export async function scanPlant(image: string){
+  const scanResult = await identifyPlant(image);
+
+  if("error" in scanResult){
+    throw new Error (scanResult.error);
+  }
+
+  const plant = await getPlant(scanResult.scientificName);
+
+  return plant;
+
 }

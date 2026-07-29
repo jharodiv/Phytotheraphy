@@ -1,6 +1,6 @@
 import { GeneratedPlantInformation } from "@app-types/gemini-plant.type";
 import { GEMINI_API_KEY } from "@env";
-import { Timestamp } from "firebase-admin/firestore";
+import { Timestamp } from "firebase/firestore";
 
 const MODEL_NAME = "gemini-2.5-flash";
 
