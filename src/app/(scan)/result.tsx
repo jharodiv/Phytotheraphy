@@ -3,23 +3,23 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function ResultScreen() {
   const {
-    imageUrl,
-    photographerName,
-    photographerUrl,
+      imageUrl,
+      photographerName,
+      photographerUrl,
 
-    commonName,
-    scientificName,
+      commonName,
+      scientificName,
 
-    family,
-    description,
+      family,
+      description,
 
-    medicinalProperties,
+      medicinalProperties,
 
-    uses,
-    preparation,
-    origin,
+      uses,
+      preparation,
+      origin,
 
-    confidence,
+      confidence,
   } = useLocalSearchParams();
 
   return (
