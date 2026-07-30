@@ -54,15 +54,23 @@ export default function CameraScreen() {
                 return;
             }
 
-            const resized = await ImageManipulator.manipulateAsync(
-                photo.uri,
-                [{ resize: { width: 800 } }],
-                {
-                    compress: 0.8,
-                    format: ImageManipulator.SaveFormat.JPEG,
-                    base64: true,
-                }
-            );
+            const resized =
+                await ImageManipulator.manipulateAsync(
+                    photo.uri,
+                    [
+                        {
+                            resize: {
+                                width: 800,
+                            },
+                        },
+                    ],
+                    {
+                        compress: 0.8,
+                        format:
+                            ImageManipulator.SaveFormat.JPEG,
+                        base64: true,
+                    }
+                );
 
             const base64 = resized.base64!.replace(
                 /^data:image\/\w+;base64,/,
@@ -72,30 +80,70 @@ export default function CameraScreen() {
             const result = await identifyPlant(base64);
 
             if ("error" in result) {
-                Alert.alert("Identification Failed", result.error);
+                Alert.alert(
+                    "Identification Failed",
+                    result.error
+                );
                 return;
             }
 
-            const unsplash = await searchHerbImage(result.commonName);
+            console.log(result);
+
+            const unsplash = await searchHerbImage(
+                result.commonName
+            );
 
             router.push({
                 pathname: "/(scan)/result",
                 params: {
-                    imageUrl: unsplash?.imageUrl ?? "",
-                    photographerName: unsplash?.photographerName ?? "",
-                    photographerUrl: unsplash?.photographerUrl ?? "",
-                    commonName: result.commonName,
-                    scientificName: result.scientificName,
-                    medicinalProperties: JSON.stringify(
-                        result.medicinalProperties
-                    ),
-                    origin: result.origin,
-                    usage: result.usage,
+                    imageUrl:
+                        unsplash?.imageUrl ?? "",
+
+                    photographerName:
+                        unsplash?.photographerName ??
+                        "",
+
+                    photographerUrl:
+                        unsplash?.photographerUrl ??
+                        "",
+
+                    commonName:
+                        result.commonName,
+
+                    scientificName:
+                        result.scientificName,
+
+                    family:
+                        result.family,
+
+                    description:
+                        result.description,
+
+                    medicinalProperties:
+                        JSON.stringify(
+                            result.medicinalProperties
+                        ),
+
+                    uses:
+                        result.uses,
+
+                    preparation:
+                        result.preparation,
+
+                    origin:
+                        result.origin,
+
+                    confidence:
+                        result.confidence.toString(),
                 },
             });
-        } catch (err) {
-            console.error(err);
-            Alert.alert("Error", "Something went wrong.");
+        } catch (error) {
+            console.error(error);
+
+            Alert.alert(
+                "Error",
+                "Something went wrong."
+            );
         } finally {
             setLoading(false);
         }
