@@ -83,7 +83,7 @@ export type PlantCacheModel = {
   scientificName: string;
   family: string;
   description: string;
-  medicinalProperties: string;
+  medicinalProperties: string[];
   uses: string;
   preparation_method: string;
   origin: string;

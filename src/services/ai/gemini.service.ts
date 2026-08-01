@@ -1,4 +1,7 @@
 import { GEMINI_API_KEY } from "@env";
+import { GeneratedPlantInformation } from "../../types/gemini-plant.type";
+
+
 
 const MODEL_NAME = "gemini-2.5-flash";
 
@@ -18,17 +21,17 @@ Do not include any text before or after the JSON.
 Return exactly this structure:
 
 {
-  "commonName": "string",
-  "scientificName": "string",
-  "family": "string",
-  "description": "string",
-  "medicinalProperties": [
-    "string"
-  ],
-  "uses": "string",
-  "preparation": "string",
-  "origin": "string",
-  "confidence": 0.95
+    "commonName": "string",
+    "scientificName": "string",
+    "family": "string",
+    "description": "string",
+    "medicinalProperties": [
+        "string"
+    ],
+    "uses": "string",
+    "preparation": "string",
+    "origin": "string",
+    "confidence": 0.95
 }
 
 Rules:
@@ -45,29 +48,13 @@ Rules:
 If you cannot identify the plant, return ONLY:
 
 {
-  "error": "Could not identify the plant."
+    "error": "Could not identify the plant."
 }
 `;
 
-export type IdentifyPlantResult =
-    | {
-          commonName: string;
-          scientificName: string;
-          family: string;
-          description: string;
-          medicinalProperties: string[];
-          uses: string;
-          preparation: string;
-          origin: string;
-          confidence: number;
-      }
-    | {
-          error: string;
-      };
-
 export async function identifyPlant(
     imageBase64: string
-): Promise<IdentifyPlantResult> {
+): Promise<GeneratedPlantInformation> {
     const requestBody = {
         contents: [
             {
