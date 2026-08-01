@@ -4,21 +4,23 @@ import {
     getDoc,
     setDoc,
     Timestamp,
-    updateDoc
+    updateDoc,
 } from "firebase/firestore";
+
+import { db } from "../../../../firebaseConfig";
 
 import { PlantCacheModel } from "@models/firestore.models";
 import { PlantInformation } from "@models/plant-information.model";
-import { generatePlantInformation } from "@services/ai/gemini-plant.service";
 import { getPlantCacheId } from "utils/plant-cache/plant-cache.utils";
-import { db } from '../../../../firebaseConfig';
 
 const PLANT_CACHE = "plant_cache";
-const CACHE_DURATION_DAYS = 180; // DAYS
-const DAYS_IN_MS = 24 * 60 * 60 * 100;
 
-// READS if the plant is already cached
+const CACHE_DURATION_DAYS = 180;
+const DAYS_IN_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * Returns a cached plant if it exists and has not expired.
+ */
 export async function getCachedPlant(
     scientificName: string
 ): Promise<PlantCacheModel | null> {
@@ -26,29 +28,29 @@ export async function getCachedPlant(
 
     const documentRef = doc(db, PLANT_CACHE, id);
 
-    const snapshot = await getDoc(
-        doc(db, PLANT_CACHE, id)
-    );
+    const snapshot = await getDoc(documentRef);
 
-    if (!snapshot.exists()){
+    if (!snapshot.exists()) {
         return null;
     }
 
     const cache = snapshot.data() as PlantCacheModel;
 
-    if(cache.expiresAt.toMillis() <= Timestamp.now().toMillis()){
+    // Remove expired cache
+    if (cache.expiresAt.toMillis() <= Timestamp.now().toMillis()) {
         await deleteDoc(documentRef);
         return null;
     }
 
-    return snapshot.data() as PlantCacheModel;
-} 
+    return cache;
+}
 
-// WRITE if the plant is not yet cached
-
+/**
+ * Creates a new cache document.
+ */
 export async function saveCachedPlant(
     plant: PlantInformation
-) : Promise<void> {
+): Promise<void> {
     const now = Timestamp.now();
 
     const cache: PlantCacheModel = {
@@ -60,7 +62,7 @@ export async function saveCachedPlant(
         ),
     };
 
-    const id = getPlantCacheId(cache.scientificName);
+    const id = getPlantCacheId(plant.scientificName);
 
     await setDoc(
         doc(db, PLANT_CACHE, id),
@@ -68,73 +70,55 @@ export async function saveCachedPlant(
     );
 }
 
-// Update if the lastAccessed timestamp whenever a chached plant is viewed
+/**
+ * Updates the last accessed timestamp.
+ */
 
 export async function updateLastAccessed(
     scientificName: string
-): Promise <void> {
-    const id = getPlantCacheId(scientificName)
+): Promise<void> {
+    const id = getPlantCacheId(scientificName);
 
     await updateDoc(
-        doc(db, PLANT_CACHE, id),{
+        doc(db, PLANT_CACHE, id),
+        {
             lastAccessedAt: Timestamp.now(),
         }
-    )
+    );
 }
 
-/*
-Look for the plant in Firestore.
-If found:
-Update lastAccessed in the background.
-Return the cached plant.
-If not found:
-Call Gemini.
-Save the result to Firestore.
-Return the generated plant.
-*/
+/**
+ * Returns an existing cache if available.
+ * Otherwise, creates one and returns it.
+ */
 
-export async function getPlant(
-    scientificName: string,
-): Promise <PlantCacheModel>{
-    
-    const cachedPlant = await getCachedPlant(scientificName);
+export async function getOrCreateCachedPlant(
+    plant: PlantInformation
+): Promise<PlantCacheModel> {
 
-    if (cachedPlant){
-        updateLastAccessed(scientificName)
+    const cachedPlant = await getCachedPlant(
+        plant.scientificName
+    );
+
+    if (cachedPlant) {
+
+        updateLastAccessed(plant.scientificName)
             .catch(console.error);
 
         return cachedPlant;
     }
 
-    const result = await generatePlantInformation(scientificName)
+    await saveCachedPlant(plant);
 
-    if("error" in result) {
-        throw new Error(result.error)
+    const savedPlant = await getCachedPlant(
+        plant.scientificName
+    );
+
+    if (!savedPlant) {
+        throw new Error(
+            "Failed to retrieve saved plant from cache."
+        );
     }
 
-    await saveCachedPlant(result)
-
-    /*
-    Instead of returning result, the function reads the document from Firestore again.
-
-    Why?
-
-    Because the Firestore document now contains the complete cached model, including fields like:
-
-    generatedAt
-    lastAccessedAt
-    expiresAt
-    model
-
-    Those fields may have been added when saving.
-
-    So the cache becomes the single source of truth. */
-
-    const savePlant = await getCachedPlant(scientificName)
-
-    if(!savePlant){
-        throw new Error("Failed to retrieve saved plant from cache")
-    }
-
-    return savePlant
+    return savedPlant;
 }
