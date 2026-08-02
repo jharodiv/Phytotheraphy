@@ -1,7 +1,7 @@
 import styles from "@components/home/favorites/favorites.style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { plantImages } from "@images/plants/plantImages";
-import { useFavoritesLogic } from "@logic/favorite/favorite.logic";
+import { useFavoritesLogic } from "@hooks/favorite/useFavorite";
 import { PlantModel } from "@models/firestore.models";
 import {
     Image,

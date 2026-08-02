@@ -5,8 +5,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import { router } from "expo-router";
 
-import { identifyPlant } from "@services/ai/gemini.service";
-import { searchHerbImage } from "@services/unsplash.service";
+import { scanPlant } from "@services/scan/scan.service";
 
 export function useCameraScan() {
     const [permission, requestPermission] =
@@ -32,7 +31,6 @@ export function useCameraScan() {
                     "Error",
                     "Could not capture image."
                 );
-
                 return;
             }
 
@@ -49,8 +47,7 @@ export function useCameraScan() {
                     {
                         compress: 0.8,
                         format:
-                            ImageManipulator.SaveFormat
-                                .JPEG,
+                            ImageManipulator.SaveFormat.JPEG,
                         base64: true,
                     }
                 );
@@ -62,69 +59,53 @@ export function useCameraScan() {
                 );
 
             const result =
-                await identifyPlant(imageBase64);
-
-            if ("error" in result) {
-                Alert.alert(
-                    "Identification Failed",
-                    result.error
-                );
-
-                return;
-            }
-
-            const unsplash =
-                await searchHerbImage(
-                    result.commonName
-                );
+                await scanPlant(imageBase64);
 
             router.push({
                 pathname: "/(scan)/result",
                 params: {
-                    imageUrl:
-                        unsplash?.imageUrl ?? "",
-
+                    imageUrl: result.imageUrl,
                     photographerName:
-                        unsplash?.photographerName ??
-                        "",
-
+                        result.photographerName,
                     photographerUrl:
-                        unsplash?.photographerUrl ??
-                        "",
+                        result.photographerUrl,
 
                     commonName:
-                        result.commonName,
+                        result.plant.commonName,
 
                     scientificName:
-                        result.scientificName,
+                        result.plant.scientificName,
 
                     family:
-                        result.family,
+                        result.plant.family,
 
                     description:
-                        result.description,
+                        result.plant.description,
 
                     medicinalProperties:
                         JSON.stringify(
-                            result.medicinalProperties
+                            result.plant.medicinalProperties
                         ),
 
                     uses:
-                        result.uses,
+                        result.plant.uses,
 
                     preparation_method:
-                        result.preparation_method,
+                        result.plant.preparation_method,
 
                     origin:
-                        result.origin,
+                        result.plant.origin,
                 },
             });
+
         } catch (error) {
             console.error(error);
 
             Alert.alert(
                 "Error",
-                "Something went wrong."
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong."
             );
         } finally {
             setLoading(false);
