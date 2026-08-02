@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Footer from "@components/home/footer/footer";
 import styles from "@components/profile/profile.style";
 
-import { useProfileLogic } from "@logic/profile/profile.logic";
+import { useProfileLogic } from "@hooks/profile/useProfile";
 
 import COLORS from "@constants/colors";
 
