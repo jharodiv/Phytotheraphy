@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { plantImages } from "@images/plants/plantImages";
+import { getPlant } from '@services/plants/plants.service';
 import { db } from "../../../../firebaseConfig";
 
 const PlantCardsSection = () => {
@@ -71,8 +72,10 @@ const PlantCardsSection = () => {
                         key={plant.id}
                         style={styles.card}
                         activeOpacity={0.8}
-                        onPress={() => {
-                            console.log(plant);
+                        onPress={async () => {
+                            const plantDetails = await getPlant(plant.scientificName);
+
+                            console.log(plantDetails);
                             // router.push(`/plant/${plant.id}`);
                         }}
                     >
