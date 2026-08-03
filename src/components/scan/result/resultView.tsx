@@ -16,7 +16,7 @@ type Props = {
   medicinalProperties: string[];
 
   uses: string;
-  preparation: string;
+  preparation_method: string;
   origin: string;
 
   confidence: number;
@@ -43,7 +43,7 @@ export default function ResultView(props: Props) {
           description={props.description}
           medicinalProperties={props.medicinalProperties}
           uses={props.uses}
-          preparation={props.preparation}
+          preparation_method={props.preparation_method}
           origin={props.origin}
           confidence={props.confidence}
         />

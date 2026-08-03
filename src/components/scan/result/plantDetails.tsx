@@ -5,7 +5,7 @@ type Props = {
   description: string;
   medicinalProperties: string[];
   uses: string;
-  preparation: string;
+  preparation_method: string;
   origin: string;
   confidence: number;
 };
@@ -15,7 +15,7 @@ export default function PlantDetails({
   description,
   medicinalProperties,
   uses,
-  preparation,
+  preparation_method,
   origin,
   confidence,
 }: Props) {
@@ -102,7 +102,7 @@ export default function PlantDetails({
         Preparation
       </Text>
 
-      <Text>{preparation || "No preparation information available."}</Text>
+      <Text>{preparation_method || "No preparation information available."}</Text>
 
       {/* Origin */}
       <Text

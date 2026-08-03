@@ -29,7 +29,7 @@ Return exactly this structure:
         "string"
     ],
     "uses": "string",
-    "preparation": "string",
+    "preparation_method": "string",
     "origin": "string",
     "confidence": 0.95
 }
@@ -41,7 +41,7 @@ Rules:
 - description = 2-4 sentence summary.
 - medicinalProperties = array of medicinal properties.
 - uses = medicinal uses.
-- preparation = common preparation methods.
+- preparation_method = common preparation methods.
 - origin = native origin.
 - confidence = decimal number from 0 to 1.
 
@@ -153,7 +153,7 @@ Return exactly this structure:
         "string"
     ],
     "uses": "string",
-    "preparation": "string",
+    "preparation_method": "string",
     "origin": "string",
     "confidence": 0.95
 }
@@ -165,7 +165,7 @@ Rules:
 - description = 2–4 sentence summary.
 - medicinalProperties = array of medicinal properties.
 - uses = medicinal uses.
-- preparation = common preparation methods.
+- preparation_method = common preparation methods.
 - origin = native origin.
 - confidence = decimal number from 0 to 1.
 
@@ -196,7 +196,6 @@ If you do not recognize the scientific name, return ONLY:
             },
             body: JSON.stringify(requestBody),
         });
-
         const data = await response.json();
 
         const text =
