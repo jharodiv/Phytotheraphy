@@ -7,6 +7,8 @@ import {
     View
 } from "react-native";
 
+import { router } from "expo-router";
+
 import {
     collection,
     getDocs,
@@ -17,6 +19,7 @@ import { useEffect, useState } from "react";
 
 import { plantImages } from "@images/plants/plantImages";
 import { getPlant } from '@services/plants/plants.service';
+import { searchHerbImage } from '@services/unsplash.service';
 import { db } from "../../../../firebaseConfig";
 
 const PlantCardsSection = () => {
@@ -73,10 +76,49 @@ const PlantCardsSection = () => {
                         style={styles.card}
                         activeOpacity={0.8}
                         onPress={async () => {
-                            const plantDetails = await getPlant(plant.scientificName);
+                            try {
+                                const plantDetails = await getPlant(
+                                    plant.scientificName
+                                );
 
-                            console.log(plantDetails);
-                            // router.push(`/plant/${plant.id}`);
+                                const image = await searchHerbImage (plant.commonName);
+
+                                router.push({
+                                    pathname: "/(scan)/result",
+                                    params: {
+                                        imageUrl: image?.imageUrl,
+                                        photographerName: "",
+                                        photographerUrl: "",
+
+                                        commonName:
+                                            plantDetails.commonName,
+
+                                        scientificName:
+                                            plantDetails.scientificName,
+
+                                        family:
+                                            plantDetails.family,
+
+                                        description:
+                                            plantDetails.description,
+
+                                        medicinalProperties: JSON.stringify(
+                                            plantDetails.medicinalProperties
+                                        ),
+
+                                        uses:
+                                            plantDetails.uses,
+
+                                        preparation_method:
+                                            plantDetails.preparation_method,
+
+                                        origin:
+                                            plantDetails.origin
+                                    },
+                                });
+                            } catch (error) {
+                                console.error(error);
+                            }
                         }}
                     >
                         <Image

@@ -16,7 +16,7 @@ export default function ResultScreen() {
       medicinalProperties,
 
       uses,
-      preparation,
+      preparation_method,
       origin,
 
       confidence,
@@ -37,7 +37,7 @@ export default function ResultScreen() {
           : []
       }
       uses={uses as string}
-      preparation={preparation as string}
+      preparation_method={preparation_method as string}
       origin={origin as string}
       confidence={Number(confidence)}
     />
