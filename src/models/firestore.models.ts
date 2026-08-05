@@ -54,6 +54,8 @@ export type FavoriteModel = {
   created_at: Timestamp;
 };
 
+/* For History, Will update soon */
+
 export type HistoryModel = {
   id: string;
   user_id: string;
@@ -73,7 +75,7 @@ export type HistoryModel = {
   confidence: number;
 
   scanned_at: Timestamp;
-  
+
 }
 
 /* For Cache */
@@ -88,6 +90,7 @@ export type PlantCacheModel = {
   preparation_method: string;
   origin: string;
   side_effect: string;
+  verified: boolean;
 
   generatedAt: Timestamp;
   lastAccessedAt: Timestamp;

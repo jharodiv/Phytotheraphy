@@ -3,23 +3,24 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function ResultScreen() {
   const {
-      imageUrl,
-      photographerName,
-      photographerUrl,
+    imageUrl,
+    photographerName,
+    photographerUrl,
 
-      commonName,
-      scientificName,
+    commonName,
+    scientificName,
 
-      family,
-      description,
+    family,
+    description,
 
-      medicinalProperties,
+    medicinalProperties,
+    verified,
 
-      uses,
-      preparation_method,
-      origin,
+    uses,
+    preparation_method,
+    origin,
 
-      confidence,
+    confidence,
   } = useLocalSearchParams();
 
   return (
@@ -35,6 +36,11 @@ export default function ResultScreen() {
         medicinalProperties
           ? JSON.parse(medicinalProperties as string)
           : []
+      }
+      verified={
+        Array.isArray(verified)
+          ? verified[0] === "true"
+          : verified === "true"
       }
       uses={uses as string}
       preparation_method={preparation_method as string}

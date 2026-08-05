@@ -20,6 +20,7 @@ type Props = {
   origin: string;
 
   confidence: number;
+  verified: boolean;
 };
 
 export default function ResultView(props: Props) {
@@ -46,6 +47,7 @@ export default function ResultView(props: Props) {
           preparation_method={props.preparation_method}
           origin={props.origin}
           confidence={props.confidence}
+          verified={props.verified}
         />
       </ScrollView>
     </View>
