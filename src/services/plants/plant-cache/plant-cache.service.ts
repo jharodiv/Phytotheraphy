@@ -55,6 +55,7 @@ export async function saveCachedPlant(
 
     const cache: PlantCacheModel = {
         ...plant,
+        verified: false,
         generatedAt: now,
         lastAccessedAt: now,
         expiresAt: Timestamp.fromMillis(
