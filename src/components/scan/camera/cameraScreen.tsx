@@ -1,6 +1,6 @@
 import { CameraView } from "expo-camera";
 
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 
 import CameraOverlay from "./cameraOverlay";
 import CaptureButton from "./captureButton";
@@ -16,6 +16,7 @@ export default function CameraScreen() {
         cameraRef,
         loading,
         handleCapture,
+        capturedImage,
     } = useCameraScan();
 
     if (!permission) {
@@ -40,11 +41,19 @@ export default function CameraScreen() {
 
     return (
         <View style={styles.container}>
-            <CameraView
-                ref={cameraRef}
-                style={styles.camera}
-                facing="back"
-            />
+            {capturedImage ? (
+                <Image
+                    source={{ uri: capturedImage }}
+                    style={styles.camera}
+                    resizeMode="cover"
+                />
+            ) : (
+                <CameraView
+                    ref={cameraRef}
+                    style={styles.camera}
+                    facing="back"
+                />
+            )}
 
             <CameraOverlay />
 

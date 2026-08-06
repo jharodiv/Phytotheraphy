@@ -17,17 +17,39 @@ export type PlantModel = {
 
   commonName: string;
   scientificName: string;
-  description: string;
-  uses: string;
   family: string;
-  origin: string;
+  description: string;
+  medicinalProperties: string[];
+  uses: string;
   preparation_method: string;
+  origin: string;
   side_effect: string;
+  verified: boolean;
 
   featured: boolean;
   categories: string[];
-  verified: boolean;
 };
+
+/* For Cache */
+
+export type PlantCacheModel = {
+  commonName: string;
+  scientificName: string;
+  family: string;
+  description: string;
+  medicinalProperties: string[];
+  uses: string;
+  preparation_method: string;
+  origin: string;
+  side_effect: string;
+  verified: boolean;
+
+  generatedAt: Timestamp;
+  lastAccessedAt: Timestamp;
+  expiresAt: Timestamp;
+
+  categories: string[];
+}
 
 export type HerbImageModel = {
   id: string;
@@ -76,23 +98,4 @@ export type HistoryModel = {
 
   scanned_at: Timestamp;
 
-}
-
-/* For Cache */
-
-export type PlantCacheModel = {
-  commonName: string;
-  scientificName: string;
-  family: string;
-  description: string;
-  medicinalProperties: string[];
-  uses: string;
-  preparation_method: string;
-  origin: string;
-  side_effect: string;
-  verified: boolean;
-
-  generatedAt: Timestamp;
-  lastAccessedAt: Timestamp;
-  expiresAt: Timestamp;
 }

@@ -1,7 +1,7 @@
 import styles from "@components/home/categories/categories.style";
 import { useCategoriesLogic } from "@components/home/categories/useCategories";
-import { plantImages } from "@images/plants/plantImages";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { plantImages } from "@images/plants/plantImages";
 import { LinearGradient } from "expo-linear-gradient";
 import {
     FlatList,
@@ -72,7 +72,7 @@ const CategorySection = () => {
                 >
                     <Pressable
                         style={styles.modalContainer}
-                        onPress={() => {}}
+                        onPress={() => { }}
                     >
                         <View style={styles.modalHandle} />
 
@@ -93,83 +93,61 @@ const CategorySection = () => {
                                         item.id
                                     }
                                     showsVerticalScrollIndicator={false}
-                                    renderItem={({ item }) => (
-                                        <TouchableOpacity
-                                            style={styles.plantItem}
-                                            activeOpacity={0.8}
-                                        >
-                                            <Image
-                                                source={
-                                                    plantImages[item.id]
-                                                }
-                                                style={
-                                                    styles.plantImage
-                                                }
-                                                resizeMode="cover"
-                                            />
+                                    renderItem={({ item }) => {
+                                        const isFavorite = favoriteIds.includes(item.id);
 
-                                            {/* Bookmark */}
+                                        return (
                                             <TouchableOpacity
-                                                style={
-                                                    styles.bookmarkButton
-                                                }
+                                                style={styles.plantItem}
                                                 activeOpacity={0.8}
-                                                onPress={() =>
-                                                    handleFavoritePress(
-                                                        item.id
-                                                    )
-                                                }
                                             >
-                                                <MaterialCommunityIcons
-                                                    name={
-                                                        favoriteIds.includes(
-                                                            item.id
-                                                        )
-                                                            ? "bookmark"
-                                                            : "bookmark-outline"
-                                                    }
-                                                    size={24}
-                                                    color={
-                                                        favoriteIds.includes(
-                                                            item.id
-                                                        )
-                                                            ? "#FFD54F"
-                                                            : "#FFFFFF"
-                                                    }
+                                                <Image
+                                                    source={plantImages[item.id]}
+                                                    style={styles.plantImage}
+                                                    resizeMode="cover"
                                                 />
+
+                                                {/* Bookmark */}
+                                                <TouchableOpacity
+                                                    style={styles.bookmarkButton}
+                                                    activeOpacity={0.8}
+                                                    onPress={() =>
+                                                        handleFavoritePress(item.id)
+                                                    }
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        name={
+                                                            isFavorite
+                                                                ? "bookmark"
+                                                                : "bookmark-outline"
+                                                        }
+                                                        size={24}
+                                                        color={
+                                                            isFavorite
+                                                                ? "#FFD54F"
+                                                                : "#FFFFFF"
+                                                        }
+                                                    />
+                                                </TouchableOpacity>
+
+                                                <LinearGradient
+                                                    colors={[
+                                                        "transparent",
+                                                        "rgba(0,0,0,0.75)",
+                                                    ]}
+                                                    style={styles.gradient}
+                                                >
+                                                    <Text style={styles.plantName}>
+                                                        {item.commonName}
+                                                    </Text>
+
+                                                    <Text style={styles.scientificName}>
+                                                        {item.scientificName}
+                                                    </Text>
+                                                </LinearGradient>
                                             </TouchableOpacity>
-
-                                            <LinearGradient
-                                                colors={[
-                                                    "transparent",
-                                                    "rgba(0,0,0,0.75)",
-                                                ]}
-                                                style={
-                                                    styles.gradient
-                                                }
-                                            >
-                                                <Text
-                                                    style={
-                                                        styles.plantName
-                                                    }
-                                                >
-                                                    {
-                                                        item.commonName
-                                                    }
-                                                </Text>
-
-                                                <Text
-                                                    style={
-                                                        styles.scientificName
-                                                    }
-                                                >
-                                                    {
-                                                        item.scientificName
-                                                    }
-                                                </Text>
-                                            </LinearGradient>
-                                        </TouchableOpacity>
-                                    )}
+                                        );
+                                    }}
                                 />
                             ) : (
                                 <Text

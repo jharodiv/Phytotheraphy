@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../../../firebaseConfig";
 
 import {
-    getFavoritePlantIds,
+    getFavoriteHerbIds,
     toggleFavorite,
 } from "@services/favorites/favorites.service";
 
@@ -56,17 +56,26 @@ export const useCategoriesLogic = () => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
     useEffect(() => {
+        async function loadFavorites() {
+            try {
+                const ids = await getFavoriteHerbIds();
+                setFavoriteIds(ids);
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
         loadFavorites();
     }, []);
 
-    const loadFavorites = async () => {
+    /*const loadFavorites = async () => {
         try {
-            const ids = await getFavoritePlantIds();
+            const ids = await getFavoriteHerbIds();
             setFavoriteIds(ids);
         } catch (err) {
             console.log(err);
         }
-    };
+    };*/
 
     const fetchPlants = async (categoryId: string) => {
         const plantsRef = collection(db, "plants");
@@ -75,9 +84,9 @@ export const useCategoriesLogic = () => {
             categoryId === "all"
                 ? plantsRef
                 : query(
-                        plantsRef,
-                        where("categories", "array-contains", categoryId)
-                    );
+                    plantsRef,
+                    where("categories", "array-contains", categoryId)
+                );
 
         const snapshot = await getDocs(q);
 

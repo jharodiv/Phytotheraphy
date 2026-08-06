@@ -9,4 +9,5 @@ export interface PlantInformation {
     preparation_method: string;
     origin: string;
     side_effect: string;
+    categories: string[];
 }
