@@ -12,7 +12,6 @@ import {
 import { PlantCacheModel, PlantModel } from "@models/firestore.models";
 import { generatePlantInformation } from "@services/ai/gemini.service";
 import { getOrCreateCachedPlant } from "@services/plants/plant-cache/plant-cache.service";
-import { getCachedPlant } from "@services/plants/plant-cache/plant-cache.service";
 import { db } from "../../../firebaseConfig";
 
 const PLANTS = "plants";
@@ -158,17 +157,8 @@ export const getPlantsByCategory = async (
 export const getPlant = async (
     scientificName: string
 ): Promise<PlantCacheModel> => {
-    try{
-
-        // Check the cache first
-        const cachedPlant = await getCachedPlant(scientificName);
-
-        if (cachedPlant) {
-            return cachedPlant;
-        }
-
+    try {
         // Generate plant information
-
         const generatedPlant =
             await generatePlantInformation(scientificName);
 
@@ -176,11 +166,11 @@ export const getPlant = async (
             throw new Error(
                 generatedPlant.error
             )
-        } 
+        }
 
         return await getOrCreateCachedPlant(generatedPlant);
     } catch (error) {
-        
+
         console.error(
             `[getPlant] Failed to retrieve "${scientificName}"`,
             error
