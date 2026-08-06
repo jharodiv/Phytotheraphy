@@ -15,16 +15,22 @@ export function useCameraScan() {
 
     const [loading, setLoading] = useState(false);
 
+    const [capturedImage, setCapturedImage] = useState<string | null>(null);
+
     async function handleCapture() {
         if (!cameraRef.current) return;
 
         setLoading(true);
 
         try {
+
             const photo =
                 await cameraRef.current.takePictureAsync({
                     base64: true,
+                    quality: 1
                 });
+
+            if (!photo) return
 
             if (!photo?.base64) {
                 Alert.alert(
@@ -33,6 +39,8 @@ export function useCameraScan() {
                 );
                 return;
             }
+
+            setCapturedImage(photo.uri);
 
             const resized =
                 await ImageManipulator.manipulateAsync(
@@ -117,6 +125,7 @@ export function useCameraScan() {
         requestPermission,
         cameraRef,
         loading,
+        capturedImage,
         handleCapture,
     };
 }
