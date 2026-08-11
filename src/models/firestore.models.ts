@@ -2,7 +2,7 @@ import { Timestamp } from "firebase/firestore";
 
 export type UserModel = {
   id: string; // uid
-  role: string;
+  role: "user" | "admin"
   email: string;
   userName: string;
   fullName: string;
@@ -26,6 +26,10 @@ export type PlantModel = {
   side_effect: string;
   verified: boolean;
 
+  imageUrl: string;
+  photographerName: string;
+  photographerUrl: string;
+
   featured: boolean;
   categories: string[];
 };
@@ -43,6 +47,10 @@ export type PlantCacheModel = {
   origin: string;
   side_effect: string;
   verified: boolean;
+
+  imageUrl: string;
+  photographerName: string;
+  photographerUrl: string;
 
   generatedAt: Timestamp;
   lastAccessedAt: Timestamp;
