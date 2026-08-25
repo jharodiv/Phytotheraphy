@@ -1,7 +1,5 @@
 import COLORS from "@constants/colors";
-import { Dimensions, StyleSheet } from "react-native";
-
-const { width } = Dimensions.get("window");
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
@@ -29,7 +27,7 @@ const styles = StyleSheet.create({
     },
 
     plantList: {
-    paddingHorizontal: 20,
+        paddingHorizontal: 20,
     },
 
     card: {
@@ -52,25 +50,27 @@ const styles = StyleSheet.create({
 
     image: {
         width: "100%",
-        height: "65%",
+        height: 140,
     },
 
     info: {
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         paddingHorizontal: 14,
+        paddingTop: 10,
     },
 
     plantName: {
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: "Poppins_600SemiBold",
         color: COLORS.black,
     },
 
     plantCategory: {
-        marginTop: 4,
-        fontSize: 13,
+        marginTop: 2,
+        fontSize: 12,
         fontFamily: "Poppins_400Regular",
+        fontStyle: "italic",
         color: "#7A7A7A",
     },
 });
