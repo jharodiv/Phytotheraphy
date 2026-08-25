@@ -4,14 +4,16 @@ import {
     documentId,
     getDoc,
     getDocs,
+    limit,
     query,
     QueryDocumentSnapshot,
     where
 } from "firebase/firestore";
 
-import { PlantCacheModel, PlantModel } from "@models/firestore.models";
+import { PlantModel } from "@models/firestore.models";
 import { generatePlantInformation } from "@services/ai/gemini.service";
 import { getOrCreateCachedPlant } from "@services/plants/plant-cache/plant-cache.service";
+import { PlantFeatured } from "@type/plants.type";
 import { db } from "../../../firebaseConfig";
 
 const PLANTS = "plants";
@@ -186,10 +188,39 @@ export const getPlant = async (
     }
 }
 
+// Fetch the plants for being featured:
+
+export const fetchFeaturedPlant = async (): Promise<PlantFeatured[]> => {
+
+    try {
+        const q = query(collection(db, "plants"), limit(5));
 
 
+        const snapshot = await getDocs(q);
+
+        const featuredPlants = snapshot.docs.map((doc) => {
+            const data = doc.data();
 
 
+            return {
+                id: doc.id,
+                commonName: data.commonName,
+                scientificName: data.scientificName
+            };
+        });
 
+        console.log(
+            "Fetched featured plants",
+            featuredPlants
+        )
 
+        return featuredPlants;
+    } catch (error) {
+        console.error(
+            "Failed to fetch the plant",
+            error
+        );
 
+        return [];
+    }
+}

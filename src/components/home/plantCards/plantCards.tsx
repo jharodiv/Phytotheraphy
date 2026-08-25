@@ -8,56 +8,40 @@ import {
     View,
 } from "react-native";
 
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-} from "firebase/firestore";
-
 import { useEffect, useState } from "react";
 
 import { plantImages } from "@images/plants/plantImages";
-import { db } from "../../../../firebaseConfig";
+
+import { usePlants } from "@hooks/plants/usePlants";
+
+import {
+    PlantFeatured,
+} from "@type/plants.type";
 
 interface Props {
-    onPlantPress: (plant: any) => void;
+    onPlantPress: (plant: PlantFeatured) => void;
 }
 
 export default function PlantCardsSection({
     onPlantPress,
 }: Props) {
-    const [plants, setPlants] = useState<any[]>([]);
+    const [plants, setPlants] =
+        useState<PlantFeatured[]>([]);
+
+    const {
+        handleFetchFeaturedPlant,
+    } = usePlants();
 
     useEffect(() => {
-        const fetchFeaturedPlants = async () => {
-            try {
-                const q = query(
-                    collection(db, "plants"),
-                    where(
-                        "featured",
-                        "==",
-                        true
-                    )
-                );
+        const loadPlants = async () => {
+            const featuredPlants =
+                await handleFetchFeaturedPlant();
 
-                const snapshot =
-                    await getDocs(q);
-
-                const featuredPlants =
-                    snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-
-                setPlants(featuredPlants);
-            } catch (error) {
-                console.error(error);
-            }
+            setPlants(featuredPlants);
         };
 
-        fetchFeaturedPlants();
-    }, []);
+        loadPlants();
+    }, [handleFetchFeaturedPlant]);
 
     return (
         <View style={styles.container}>
@@ -69,9 +53,7 @@ export default function PlantCardsSection({
 
             <ScrollView
                 horizontal
-                showsHorizontalScrollIndicator={
-                    false
-                }
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={
                     styles.plantList
                 }
@@ -87,9 +69,7 @@ export default function PlantCardsSection({
                     >
                         <Image
                             source={
-                                plantImages[
-                                    plant.id
-                                ]
+                                plantImages[plant.id]
                             }
                             style={styles.image}
                             resizeMode="cover"
@@ -109,9 +89,7 @@ export default function PlantCardsSection({
                                     styles.plantCategory
                                 }
                             >
-                                {
-                                    plant.scientificName
-                                }
+                                {plant.scientificName}
                             </Text>
                         </View>
                     </TouchableOpacity>
