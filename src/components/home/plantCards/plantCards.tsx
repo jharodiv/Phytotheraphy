@@ -15,16 +15,13 @@ import { plantImages } from "@images/plants/plantImages";
 import { usePlants } from "@hooks/plants/usePlants";
 
 import {
+    PlantCardsProps,
     PlantFeatured,
 } from "@type/plants.type";
 
-interface Props {
-    onPlantPress: (plant: PlantFeatured) => void;
-}
-
 export default function PlantCardsSection({
     onPlantPress,
-}: Props) {
+}: PlantCardsProps) {
     const [plants, setPlants] =
         useState<PlantFeatured[]>([]);
 
