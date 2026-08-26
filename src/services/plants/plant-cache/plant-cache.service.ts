@@ -22,6 +22,7 @@ import { PlantInformation } from "@models/plant-information.model";
 
 import { searchHerbImage } from "@services/unsplash.service";
 
+import { generatePlantInformation } from "@services/ai/gemini.service";
 import { getPlantCacheId } from "utils/plant-cache/plant-cache.utils";
 
 const PLANT_CACHE = "plant_cache";
@@ -142,8 +143,8 @@ export async function saveCachedPlant(
         expiresAt:
             Timestamp.fromMillis(
                 now.toMillis() +
-                    CACHE_DURATION_DAYS *
-                        DAYS_IN_MS
+                CACHE_DURATION_DAYS *
+                DAYS_IN_MS
             ),
     };
 
@@ -200,29 +201,28 @@ export async function updateLastAccessed(
  * of truth.
  */
 export async function getOrCreatePlant(
-    plant: PlantInformation
+    scientificName: string
 ): Promise<PlantModel | PlantCacheModel> {
     try {
         // 1. Check official plants
-
         const existingPlant =
             await getPlant(
-                plant.scientificName
+                scientificName
             );
 
         if (existingPlant) {
             return existingPlant;
         }
 
-        // 2. Check plant cache
+        // 2. Check cache
         const cachedPlant =
             await getCachedPlant(
-                plant.scientificName
+                scientificName
             );
 
         if (cachedPlant) {
             updateLastAccessed(
-                plant.scientificName
+                scientificName
             ).catch((error) => {
                 console.error(
                     "Failed to update plant cache access time:",
@@ -233,15 +233,25 @@ export async function getOrCreatePlant(
             return cachedPlant;
         }
 
-        // 3. Plant does not exist anywhere
-        //
-        // Create a new unverified cache entry.
-        // This also retrieves and stores the
-        // Unsplash image.
+        // 3. Generate plant information
+        const generatedPlant =
+            await generatePlantInformation(
+                scientificName
+            );
 
-        return await saveCachedPlant(
-            plant
-        );
+        if ("error" in generatedPlant) {
+            throw new Error(
+                generatedPlant.error
+            );
+        }
+
+        // 4. Save generated plant to cache
+        const cachedGeneratedPlant =
+            await saveCachedPlant(
+                generatedPlant
+            );
+
+        return cachedGeneratedPlant;
 
     } catch (error) {
         console.error(

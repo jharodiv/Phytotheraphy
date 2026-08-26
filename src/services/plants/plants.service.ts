@@ -11,8 +11,6 @@ import {
 } from "firebase/firestore";
 
 import { PlantModel } from "@models/firestore.models";
-import { generatePlantInformation } from "@services/ai/gemini.service";
-import { getOrCreateCachedPlant } from "@services/plants/plant-cache/plant-cache.service";
 import { PlantFeatured } from "@type/plants.type";
 import { db } from "../../../firebaseConfig";
 
@@ -156,7 +154,7 @@ export const getPlantsByCategory = async (
  * @throws Error if generation or caching fails.
  */
 
-export const getPlant = async (
+/*export const getPlant = async (
     scientificName: string
 ): Promise<PlantCacheModel> => {
     try {
@@ -170,7 +168,7 @@ export const getPlant = async (
             )
         }
 
-        return await getOrCreateCachedPlant(generatedPlant);
+        return await getOrCreatePlant(generatedPlant);
     } catch (error) {
 
         console.error(
@@ -186,7 +184,7 @@ export const getPlant = async (
             "Failed to retrieve plant information."
         );
     }
-}
+}*/
 
 // Fetch the plants for being featured:
 
