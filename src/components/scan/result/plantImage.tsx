@@ -1,23 +1,13 @@
+import { PlantImageProps } from "@type/plants.type";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Linking, Pressable, Text, View } from "react-native";
-
-type Props = {
-  imageUrl: string;
-  photographerName: string;
-  photographerUrl: string;
-  commonName: string;
-  scientificName: string;
-};
+import { Text, View } from "react-native";
 
 export default function PlantImage({
   imageUrl,
-  photographerName,
-  photographerUrl,
   commonName,
   scientificName,
-}: Props) {
-  const showAttribution = !!photographerName && !!photographerUrl;
+}: PlantImageProps) {
 
   return (
     <View style={{ height: 340, backgroundColor: "#e0e0e0" }}>
@@ -55,26 +45,6 @@ export default function PlantImage({
         </Text>
         <Text style={{ color: "white" }}>{scientificName}</Text>
       </View>
-
-      {/* Unsplash attribution */}
-      {showAttribution && (
-        <Pressable
-          onPress={() => Linking.openURL(photographerUrl)}
-          style={{
-            position: "absolute",
-            right: 12,
-            bottom: 8,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            borderRadius: 4,
-          }}
-        >
-          <Text style={{ color: "#ccc", fontSize: 11 }}>
-            Photo by {photographerName} on Unsplash
-          </Text>
-        </Pressable>
-      )}
     </View>
   );
 }

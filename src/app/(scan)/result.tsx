@@ -4,48 +4,55 @@ import { useLocalSearchParams } from "expo-router";
 export default function ResultScreen() {
   const {
     imageUrl,
-    photographerName,
-    photographerUrl,
-
     commonName,
     scientificName,
 
     family,
     description,
-
     medicinalProperties,
-    verified,
 
     uses,
-    preparation_method,
+    preparationMethod,
     origin,
+    sideEffect,
 
-    confidence,
+    verified,
   } = useLocalSearchParams();
+
+  const plantDetails = {
+    family: family as string,
+    description: description as string,
+
+    medicinalProperties:
+      medicinalProperties
+        ? JSON.parse(
+          medicinalProperties as string
+        )
+        : [],
+
+    uses: uses as string,
+    preparationMethod:
+      preparationMethod as string,
+
+    origin: origin as string,
+    sideEffect: sideEffect as string,
+
+    verified:
+      Array.isArray(verified)
+        ? verified[0] === "true"
+        : verified === "true",
+  };
+
+  const plantImage = {
+    imageUrl: imageUrl as string,
+    commonName: commonName as string,
+    scientificName: scientificName as string,
+  };
 
   return (
     <ResultView
-      imageUrl={imageUrl as string}
-      photographerName={photographerName as string}
-      photographerUrl={photographerUrl as string}
-      commonName={commonName as string}
-      scientificName={scientificName as string}
-      family={family as string}
-      description={description as string}
-      medicinalProperties={
-        medicinalProperties
-          ? JSON.parse(medicinalProperties as string)
-          : []
-      }
-      verified={
-        Array.isArray(verified)
-          ? verified[0] === "true"
-          : verified === "true"
-      }
-      uses={uses as string}
-      preparation_method={preparation_method as string}
-      origin={origin as string}
-      confidence={Number(confidence)}
+      plantDetails={plantDetails}
+      plantImage={plantImage}
     />
   );
 }
