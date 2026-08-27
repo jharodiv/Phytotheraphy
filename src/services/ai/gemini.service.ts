@@ -29,9 +29,9 @@ Return exactly this structure:
         "string"
     ],
     "uses": "string",
-    "preparation_method": "string",
+    "preparationMethod": "string",
+    "sideEffect": "string",
     "origin": "string",
-    "confidence": 0.95
 }
 
 Rules:
@@ -41,9 +41,9 @@ Rules:
 - description = 2-4 sentence summary.
 - medicinalProperties = array of medicinal properties.
 - uses = medicinal uses.
-- preparation_method = common preparation methods.
+- preparationMethod = common preparation methods.
+- sideEffect = common side effects.
 - origin = native origin.
-- confidence = decimal number from 0 to 1.
 
 If you cannot identify the plant, return ONLY:
 
@@ -153,9 +153,9 @@ Return exactly this structure:
         "string"
     ],
     "uses": "string",
-    "preparation_method": "string",
+    "preparationMethod": "string",
+    "sideEffect": "string",
     "origin": "string",
-    "confidence": 0.95
 }
 
 Rules:
@@ -165,9 +165,9 @@ Rules:
 - description = 2–4 sentence summary.
 - medicinalProperties = array of medicinal properties.
 - uses = medicinal uses.
-- preparation_method = common preparation methods.
+- preparationMethod = common preparation methods.
+- sideEffect = common side effects.
 - origin = native origin.
-- confidence = decimal number from 0 to 1.
 
 If you do not recognize the scientific name, return ONLY:
 

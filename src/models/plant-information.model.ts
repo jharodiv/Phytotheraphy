@@ -6,8 +6,8 @@ export interface PlantInformation {
     description: string;
     medicinalProperties: string[];
     uses: string;
-    preparation_method: string;
+    preparationMethod: string;
     origin: string;
-    side_effect: string;
+    sideEffect: string;
     categories: string[];
 }

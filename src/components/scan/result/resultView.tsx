@@ -1,37 +1,15 @@
 import PlantDetails from "@components/scan/result/plantDetails";
 import PlantImage from "@components/scan/result/plantImage";
+import { ResultViewProps } from "@type/plants.type";
 import { ScrollView, View } from "react-native";
 
-type Props = {
-  imageUrl: string;
-  photographerName: string;
-  photographerUrl: string;
-
-  commonName: string;
-  scientificName: string;
-
-  family: string;
-  description: string;
-
-  medicinalProperties: string[];
-
-  uses: string;
-  preparation_method: string;
-  origin: string;
-
-  confidence: number;
-  verified: boolean;
-};
-
-export default function ResultView(props: Props) {
+export default function ResultView({ plantDetails, plantImage }: ResultViewProps) {
   return (
     <View style={{ flex: 1 }}>
       <PlantImage
-        imageUrl={props.imageUrl}
-        photographerName={props.photographerName}
-        photographerUrl={props.photographerUrl}
-        commonName={props.commonName}
-        scientificName={props.scientificName}
+        imageUrl={plantImage.imageUrl}
+        commonName={plantImage.commonName}
+        scientificName={plantImage.scientificName}
       />
 
       <ScrollView
@@ -40,14 +18,14 @@ export default function ResultView(props: Props) {
         }}
       >
         <PlantDetails
-          family={props.family}
-          description={props.description}
-          medicinalProperties={props.medicinalProperties}
-          uses={props.uses}
-          preparation_method={props.preparation_method}
-          origin={props.origin}
-          confidence={props.confidence}
-          verified={props.verified}
+          family={plantDetails.family}
+          description={plantDetails.description}
+          medicinalProperties={plantDetails.medicinalProperties}
+          uses={plantDetails.uses}
+          preparationMethod={plantDetails.preparationMethod}
+          origin={plantDetails.origin}
+          sideEffect={plantDetails.sideEffect}
+          verified={plantDetails.verified}
         />
       </ScrollView>
     </View>

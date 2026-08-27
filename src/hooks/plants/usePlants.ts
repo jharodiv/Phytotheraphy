@@ -49,6 +49,17 @@ export function usePlants(): UsePlantsReturn {
 
                 const plant = await getOrCreatePlant(scientificName);
 
+                console.log("Handle Get Plant Result", plant);
+
+
+                if (!plant) {
+                    console.log(
+                        "No plant detailed returned"
+                    );
+                }
+
+                console.log("Plant details successfully retrieved");
+
                 return plant;
 
             } catch (error) {
@@ -71,28 +82,10 @@ export function usePlants(): UsePlantsReturn {
         },
         []
     );
-    const handlePlantPress =
-        useCallback(
-            async (
-                plant: PlantFeatured
-            ): Promise<
-                PlantModel |
-                PlantCacheModel |
-                null
-            > => {
-                setError(null);
-
-                return await handleGetPlant(
-                    plant.scientificName
-                );
-            },
-            [handleGetPlant]
-        );
 
     return {
         handleFetchFeaturedPlant,
         handleGetPlant,
-        handlePlantPress,
         loading,
         error,
     }

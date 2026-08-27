@@ -123,22 +123,43 @@ export async function saveCachedPlant(
         );
 
     const cache: PlantCacheModel = {
-        ...plant,
+        commonName:
+            plant.commonName,
+
+        scientificName:
+            plant.scientificName,
+
+        family:
+            plant.family,
+
+        description:
+            plant.description,
+
+        medicinalProperties:
+            plant.medicinalProperties,
+
+        uses:
+            plant.uses,
+
+        preparationMethod:
+            plant.preparationMethod,
+
+        origin:
+            plant.origin,
+
+        sideEffect:
+            plant.sideEffect,
 
         verified: false,
 
         imageUrl:
             unsplash?.imageUrl ?? "",
 
-        photographerName:
-            unsplash?.photographerName ?? "",
+        generatedAt:
+            now,
 
-        photographerUrl:
-            unsplash?.photographerUrl ?? "",
-
-        generatedAt: now,
-
-        lastAccessedAt: now,
+        lastAccessedAt:
+            now,
 
         expiresAt:
             Timestamp.fromMillis(
@@ -146,6 +167,8 @@ export async function saveCachedPlant(
                 CACHE_DURATION_DAYS *
                 DAYS_IN_MS
             ),
+
+        categories: [],
     };
 
     const id =
@@ -164,7 +187,6 @@ export async function saveCachedPlant(
 
     return cache;
 }
-
 /**
  * Updates the last accessed timestamp
  * of a cached plant.

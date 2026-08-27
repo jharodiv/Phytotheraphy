@@ -21,9 +21,9 @@ export type PlantModel = {
   description: string;
   medicinalProperties: string[];
   uses: string;
-  preparation_method: string;
+  preparationMethod: string;
   origin: string;
-  side_effect: string;
+  sideEffect: string;
   verified: boolean;
 
   imageUrl: string;
@@ -43,15 +43,12 @@ export type PlantCacheModel = {
   description: string;
   medicinalProperties: string[];
   uses: string;
-  preparation_method: string;
+  preparationMethod: string;
   origin: string;
-  side_effect: string;
+  sideEffect: string;
   verified: boolean;
 
   imageUrl: string;
-  photographerName: string;
-  photographerUrl: string;
-
   generatedAt: Timestamp;
   lastAccessedAt: Timestamp;
   expiresAt: Timestamp;
