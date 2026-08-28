@@ -8,37 +8,16 @@ import {
     View,
 } from "react-native";
 
-import { useEffect, useState } from "react";
-
 import { plantImages } from "@images/plants/plantImages";
-
-import { usePlants } from "@hooks/plants/usePlants";
 
 import {
     PlantCardsProps,
-    PlantFeatured,
 } from "@type/plants.type";
 
 export default function PlantCardsSection({
     onPlantPress,
+    onFeaturedPlants
 }: PlantCardsProps) {
-    const [plants, setPlants] =
-        useState<PlantFeatured[]>([]);
-
-    const {
-        handleFetchFeaturedPlant,
-    } = usePlants();
-
-    useEffect(() => {
-        const loadPlants = async () => {
-            const featuredPlants =
-                await handleFetchFeaturedPlant();
-
-            setPlants(featuredPlants);
-        };
-
-        loadPlants();
-    }, [handleFetchFeaturedPlant]);
 
     return (
         <View style={styles.container}>
@@ -55,7 +34,7 @@ export default function PlantCardsSection({
                     styles.plantList
                 }
             >
-                {plants.map((plant) => (
+                {onFeaturedPlants.map((plant) => (
                     <TouchableOpacity
                         key={plant.id}
                         style={styles.card}

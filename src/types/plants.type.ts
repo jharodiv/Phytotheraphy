@@ -18,6 +18,7 @@ export interface PlantCardsProps {
     onPlantPress: (
         plant: PlantFeatured
     ) => Promise<void>;
+    onFeaturedPlants: PlantFeatured[];
 }
 
 export type PlantDetailsProps = {

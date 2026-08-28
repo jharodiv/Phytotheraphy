@@ -10,10 +10,13 @@ import PlantCardsSection from "@components/home/plantCards/plantCards";
 import ScanCard from "@components/home/scanCard/scanCard";
 import SearchBar from "@components/home/searchBar/searchBar";
 import SearchResults from "@components/home/searchBar/searchResult/searchResult.screen";
+import { useEffect, useState } from "react";
 
 import { useNavigationPlant } from "@hooks/plants/usePlantNavigation";
+import { usePlants } from "@hooks/plants/usePlants";
 import { usePlantSearch } from "@services/plants/plants.filter";
-import { useState } from "react";
+
+import { PlantFeatured } from "@type/plants.type";
 
 export default function TabLayout() {
     const {
@@ -26,7 +29,23 @@ export default function TabLayout() {
         handlePlantPress,
     } = useNavigationPlant();
 
-    const [loading, setLoading] = useState(false)
+    const {
+        handleFetchFeaturedPlant,
+        loading
+    } = usePlants();
+
+    const [featuredPlants, setFeaturedPlants] = useState<PlantFeatured[]>([]);
+
+    useEffect(() => {
+        const loadFeaturedPlants = async () => {
+            const plants = await handleFetchFeaturedPlant();
+
+            setFeaturedPlants(plants);
+        };
+
+
+        loadFeaturedPlants();
+    }, [handleFetchFeaturedPlant]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -61,9 +80,8 @@ export default function TabLayout() {
                     <Categories />
 
                     <PlantCardsSection
-                        onPlantPress={
-                            handlePlantPress
-                        }
+                        onFeaturedPlants={featuredPlants}
+                        onPlantPress={handlePlantPress}
                     />
                 </ScrollView>
 
@@ -71,7 +89,7 @@ export default function TabLayout() {
 
                 <LoadingOverlay
                     visible={loading}
-                    message="Analyzing plant..."
+                    message="Loading"
                 />
             </View>
         </SafeAreaView>
