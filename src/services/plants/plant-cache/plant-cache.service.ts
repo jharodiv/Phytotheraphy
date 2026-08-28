@@ -223,13 +223,13 @@ export async function updateLastAccessed(
  * of truth.
  */
 export async function getOrCreatePlant(
-    scientificName: string
+    plantInformation: PlantInformation
 ): Promise<PlantModel | PlantCacheModel> {
     try {
         // 1. Check official plants
         const existingPlant =
             await getPlant(
-                scientificName
+                plantInformation.scientificName
             );
 
         if (existingPlant) {
@@ -239,12 +239,12 @@ export async function getOrCreatePlant(
         // 2. Check cache
         const cachedPlant =
             await getCachedPlant(
-                scientificName
+                plantInformation.scientificName
             );
 
         if (cachedPlant) {
             updateLastAccessed(
-                scientificName
+                plantInformation.scientificName
             ).catch((error) => {
                 console.error(
                     "Failed to update plant cache access time:",
@@ -258,7 +258,7 @@ export async function getOrCreatePlant(
         // 3. Generate plant information
         const generatedPlant =
             await generatePlantInformation(
-                scientificName
+                plantInformation.scientificName
             );
 
         if ("error" in generatedPlant) {

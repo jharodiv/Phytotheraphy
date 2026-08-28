@@ -2,6 +2,11 @@ import ResultView from "@components/scan/result/resultView";
 import { useLocalSearchParams } from "expo-router";
 
 export default function ResultScreen() {
+
+  const params = useLocalSearchParams();
+
+  console.log("RESULT PARAMS:", params);
+  console.log("IMAGE URL:", params.imageUrl);
   const {
     imageUrl,
     commonName,

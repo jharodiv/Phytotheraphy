@@ -98,8 +98,8 @@ export function useCameraScan() {
                     uses:
                         result.plant.uses,
 
-                    preparation_method:
-                        result.plant.preparation_method,
+                    preparationMethod:
+                        result.plant.preparationMethod,
 
                     origin:
                         result.plant.origin,
