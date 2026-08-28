@@ -1,17 +1,17 @@
 import { styles } from "@components/common/loadingOverlay.style";
-import { ActivityIndicator, Text, View } from "react-native";
-
-type Props = {
-    visible: boolean;
-    message?: string;
-};
+import {
+    ActivityIndicator,
+    Text,
+    View,
+} from "react-native";
+import { LoadingOverlayProps } from "@type/loading.type";
 
 export default function LoadingOverlay({
     visible,
     message = "Loading...",
-}: Props){
-
-    if(!visible) return null;
+    subtitle = "Please wait...",
+}: LoadingOverlayProps) {
+    if (!visible) return null;
 
     return (
         <View style={styles.overlay}>
@@ -25,8 +25,7 @@ export default function LoadingOverlay({
             </Text>
 
             <Text style={styles.subtitle}>
-                Please wait while Gemini generates the
-                plant information.
+                {subtitle}
             </Text>
         </View>
     );
