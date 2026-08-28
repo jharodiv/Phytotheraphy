@@ -89,8 +89,7 @@ export default function TabLayout() {
 
                 <LoadingOverlay
                     visible={loading}
-                    message="Loading Plants.."
-                    subtitle="Please wait while loading the plants"
+                    message="Loading"
                 />
             </View>
         </SafeAreaView>

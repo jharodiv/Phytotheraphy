@@ -11,20 +11,54 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
 
-        backgroundColor: "black",
-        opacity: 0.8,
+        backgroundColor: "rgba(0, 0, 0, 0.55)",
+        zIndex: 999,
+    },
+
+    card: {
+        width: "80%",
+        maxWidth: 320,
+
+        paddingVertical: 28,
+        paddingHorizontal: 24,
+
+        alignItems: "center",
+
+        backgroundColor: "transparent",
+
+        elevation: 10,
+    },
+
+    spinnerContainer: {
+        width: 64,
+        height: 64,
+
+        justifyContent: "center",
+        alignItems: "center",
+
+        borderRadius: 32,
+        backgroundColor: "#E8F5E9",
+
+        marginBottom: 18,
     },
 
     title: {
-        marginTop: 16,
         fontSize: 18,
-        fontWeight: "600",
+        fontWeight: "700",
+        color: "#222222",
+
+        textAlign: "center",
     },
 
     subtitle: {
         marginTop: 8,
-        color: "#666",
+
+        fontSize: 14,
+        lineHeight: 20,
+
+        color: "#777777",
         textAlign: "center",
-        paddingHorizontal: 32,
+
+        paddingHorizontal: 8,
     },
 });
