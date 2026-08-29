@@ -2,8 +2,6 @@ import { UNSPLASH_ACCESS_KEY } from "@env";
 
 interface UnsplashResult {
   imageUrl: string;
-  photographerName: string;
-  photographerUrl: string;
 }
 
 export async function searchHerbImage(
@@ -20,8 +18,6 @@ export async function searchHerbImage(
     const photo = data.results[0];
     return {
       imageUrl: photo.urls.regular,
-      photographerName: photo.user.name,
-      photographerUrl: photo.user.links.html,
     };
   }
   return null; // no image found

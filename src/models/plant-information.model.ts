@@ -1,5 +1,6 @@
 
 export interface PlantInformation {
+    imageUrl: string;
     commonName: string;
     scientificName: string;
     family: string;

@@ -72,11 +72,7 @@ export function useCameraScan() {
             router.push({
                 pathname: "/(scan)/result",
                 params: {
-                    imageUrl: result.imageUrl,
-                    photographerName:
-                        result.photographerName,
-                    photographerUrl:
-                        result.photographerUrl,
+                    //imageUrl: result.imageUrl,  
 
                     commonName:
                         result.plant.commonName,
@@ -98,8 +94,8 @@ export function useCameraScan() {
                     uses:
                         result.plant.uses,
 
-                    preparation_method:
-                        result.plant.preparation_method,
+                    preparationMethod:
+                        result.plant.preparationMethod,
 
                     origin:
                         result.plant.origin,

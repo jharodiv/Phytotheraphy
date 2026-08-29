@@ -22,7 +22,6 @@ import { PlantInformation } from "@models/plant-information.model";
 
 import { searchHerbImage } from "@services/unsplash.service";
 
-import { generatePlantInformation } from "@services/ai/gemini.service";
 import { getPlantCacheId } from "utils/plant-cache/plant-cache.utils";
 
 const PLANT_CACHE = "plant_cache";
@@ -224,7 +223,8 @@ export async function updateLastAccessed(
  */
 export async function getOrCreatePlant(
     scientificName: string
-): Promise<PlantModel | PlantCacheModel> {
+): Promise<PlantModel | PlantCacheModel | null> {
+
     try {
         // 1. Check official plants
         const existingPlant =
@@ -255,29 +255,12 @@ export async function getOrCreatePlant(
             return cachedPlant;
         }
 
-        // 3. Generate plant information
-        const generatedPlant =
-            await generatePlantInformation(
-                scientificName
-            );
-
-        if ("error" in generatedPlant) {
-            throw new Error(
-                generatedPlant.error
-            );
-        }
-
-        // 4. Save generated plant to cache
-        const cachedGeneratedPlant =
-            await saveCachedPlant(
-                generatedPlant
-            );
-
-        return cachedGeneratedPlant;
+        // 3. Nothing found
+        return null;
 
     } catch (error) {
         console.error(
-            "Failed to get or create plant:",
+            "Failed to get plant:",
             error
         );
 

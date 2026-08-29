@@ -44,3 +44,7 @@ export type ResultViewProps = {
     plantDetails: PlantDetailsProps;
     plantImage: PlantImageProps;
 }
+
+export interface ScanPlantResult {
+    plant: PlantModel | PlantCacheModel;
+}
