@@ -1,5 +1,4 @@
 import { PlantCacheModel, PlantModel } from "@models/firestore.models";
-import { PlantInformation } from "@models/plant-information.model";
 import { getOrCreatePlant } from "@services/plants/plant-cache/plant-cache.service";
 import { fetchFeaturedPlant } from "@services/plants/plants.service";
 import { PlantFeatured, UsePlantsReturn } from "@type/plants.type";
@@ -42,13 +41,13 @@ export function usePlants(): UsePlantsReturn {
 
     const handleGetPlant = useCallback(
         async (
-            plantInformation: PlantInformation
+            scientificName: string
         ): Promise<PlantModel | PlantCacheModel | null> => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const plant = await getOrCreatePlant(plantInformation);
+                const plant = await getOrCreatePlant(scientificName);
 
                 console.log("Handle Get Plant Result", plant);
 

@@ -1,12 +1,11 @@
 import { PlantCacheModel, PlantModel } from "@models/firestore.models";
-import { PlantInformation } from "@models/plant-information.model";
 
 
 export type UsePlantsReturn = {
     loading: boolean;
     error: string | null;
     handleFetchFeaturedPlant: () => Promise<PlantFeatured[]>;
-    handleGetPlant: (plantInformation: PlantInformation) => Promise<PlantModel | PlantCacheModel | null>;
+    handleGetPlant: (scientificName: string) => Promise<PlantModel | PlantCacheModel | null>;
 }
 
 export type PlantFeatured = {
@@ -44,4 +43,8 @@ export type PlantImageProps = {
 export type ResultViewProps = {
     plantDetails: PlantDetailsProps;
     plantImage: PlantImageProps;
+}
+
+export interface ScanPlantResult {
+    plant: PlantModel | PlantCacheModel;
 }

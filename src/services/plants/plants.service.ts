@@ -137,55 +137,6 @@ export const getPlantsByCategory = async (
     return snapshot.docs.map(mapPlant);
 };
 
-
-
-/**
- * Retrieves complete plant information by scientific name.
- *
- * Workflow:
- * 1. Check the cache.
- * 2. If found, return the cached plant.
- * 3. Otherwise, generate the information using Gemini.
- * 4. Cache the generated result.
- * 5. Return the cached/generated plant.
- *
- * @param scientificName The plant's scientific name.
- * @returns Complete plant information.
- * @throws Error if generation or caching fails.
- */
-
-/*export const getPlant = async (
-    scientificName: string
-): Promise<PlantCacheModel> => {
-    try {
-        // Generate plant information
-        const generatedPlant =
-            await generatePlantInformation(scientificName);
-
-        if ("error" in generatedPlant) {
-            throw new Error(
-                generatedPlant.error
-            )
-        }
-
-        return await getOrCreatePlant(generatedPlant);
-    } catch (error) {
-
-        console.error(
-            `[getPlant] Failed to retrieve "${scientificName}"`,
-            error
-        );
-
-        if (error instanceof Error) {
-            throw error;
-        }
-
-        throw new Error(
-            "Failed to retrieve plant information."
-        );
-    }
-}*/
-
 // Fetch the plants for being featured:
 
 export const fetchFeaturedPlant = async (): Promise<PlantFeatured[]> => {
